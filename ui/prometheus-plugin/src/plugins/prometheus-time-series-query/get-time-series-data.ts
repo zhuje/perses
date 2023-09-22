@@ -58,6 +58,10 @@ export const getTimeSeriesData: TimeSeriesQueryPlugin<PrometheusTimeSeriesQueryS
   }
 
   // Get the datasource, using the default Prom Datasource if one isn't specified in the query
+  // JZ NOTES: DEFAULT_PROM == 'PrometheusDatasource'
+
+  console.warn("JZ context: ", JSON.stringify(context, null, 3));
+
   const client: PrometheusClient = await context.datasourceStore.getDatasourceClient(spec.datasource ?? DEFAULT_PROM);
 
   // Make the request to Prom

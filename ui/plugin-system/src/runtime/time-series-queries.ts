@@ -90,6 +90,7 @@ export const useTimeSeriesQuery = (
   options?: UseTimeSeriesQueryOptions,
   queryOptions?: QueryObserverOptions
 ) => {
+  
   const { data: plugin } = usePlugin(TIME_SERIES_QUERY_KEY, definition.spec.plugin.kind);
   const context = useTimeSeriesQueryContext();
 
@@ -137,7 +138,8 @@ export function useTimeSeriesQueries(
         queryFn: async () => {
           // Keep options out of query key so we don't re-run queries because suggested step changes
           const ctx: TimeSeriesQueryContext = { ...context, suggestedStepMs: options?.suggestedStepMs };
-          const plugin = await getPlugin(TIME_SERIES_QUERY_KEY, definition.spec.plugin.kind);
+          // JZ Notes : defintiion.spec.plugin.kind == PrometheusTimeSeriesQuery
+          const plugin = await getPlugin(TIME_SERIES_QUERY_KEY, definition.spec.plugin.kind); 
           const data = await plugin.getTimeSeriesData(definition.spec.plugin.spec, ctx);
           return data;
         },

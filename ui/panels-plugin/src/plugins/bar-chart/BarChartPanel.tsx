@@ -32,6 +32,14 @@ export function BarChartPanel(props: BarChartPanelProps) {
 
   const { queryResults, isLoading, isFetching } = useDataQueries('TimeSeriesQuery'); // gets data queries from a context provider, see DataQueriesProvider
 
+  // useDataQueries('TraceQuery')
+
+  // const useDataQueries 
+
+  // if (traceQuery ){ 
+  //   return TraceModel
+  // }
+
   const barChartData: BarChartData[] = useMemo(() => {
     const calculate = CalculationsMap[calculation as CalculationType];
     const barChartData: BarChartData[] = [];

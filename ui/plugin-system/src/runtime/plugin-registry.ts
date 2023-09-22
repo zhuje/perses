@@ -80,5 +80,8 @@ type UseListPluginMetadataOptions = Omit<
  */
 export function useListPluginMetadata(pluginType: PluginType, options?: UseListPluginMetadataOptions) {
   const { listPluginMetadata } = usePluginRegistry();
+
+  // JZ NOTES: useQuery(queryKey, fetchDataFx, options?)
+  // JZ NOTES: queryKey -- is used to create a unique key for caching; (e.g. listPluginMetaDataTimeSeriesQuery)
   return useQuery(['listPluginMetadata', pluginType], () => listPluginMetadata(pluginType), options);
 }

@@ -31,7 +31,6 @@ type TimeSeriesQueryPluginDependencies = {
  */
 export interface TimeSeriesQueryPlugin<Spec = UnknownSpec> extends Plugin<Spec> {
   getTimeSeriesData: (spec: Spec, ctx: TimeSeriesQueryContext) => Promise<TimeSeriesData>;
-
   dependsOn?: (spec: Spec, ctx: TimeSeriesQueryContext) => TimeSeriesQueryPluginDependencies;
 }
 

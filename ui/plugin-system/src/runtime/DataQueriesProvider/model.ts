@@ -15,6 +15,7 @@ import { Definition, QueryDefinition, UnknownSpec, QueryDataType } from '@perses
 import { QueryObserverOptions, UseQueryResult } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 import { useListPluginMetadata } from '../plugin-registry';
+import { useState } from 'react';
 
 type QueryOptions = Record<string, unknown>;
 export interface DataQueriesProviderProps<QueryPluginSpec = UnknownSpec> {
@@ -58,22 +59,45 @@ export function transformQueryResults(results: UseQueryResult[], definitions: Qu
   });
 }
 
+/**
+ * JZ NOTES: useQueryType returns a function `const getQueryType('PrometheusTimeSeriesQuery') returns 'TimeSeriesQuery'`. 
+ * This function checks if the plugin.kind 'PrometheusTimeSeriesQuery' can be mapped to a query type 
+ * @returns `const getQueryType('TempoTraceQuery') return 'TraceQuery'
+ */
 export function useQueryType(): (pluginKind: string) => string | undefined {
+
+  // JZ NOTES: useListPluginMetaData uses usePluginRegistry to get a list of all available plugin types 
+  // JZ Question: WHY?? Are we passing a pluginType? This parameter isn't passed and doesn't do any filtering
+  // useListPluginMetadata(<pluginType) returns all plugins from the PluginRegistry regardless of param 
+  // (e.g. 'TimeSeriesQuery', 'TraceQuery')
   const { data: timeSeriesQueryPlugins, isLoading } = useListPluginMetadata('TimeSeriesQuery');
+  const { data: traceQueryPlugins, isLoading: isTraceQueryPluginLoading } = useListPluginMetadata('TraceQuery');
+
+  // console.log("JZ timeSeriesQueryPlugins: ", timeSeriesQueryPlugins, "\n isloading: ", isLoading )
+  // console.log("JZ traceQueryPlugins: ", traceQueryPlugins, "\n isloading: ", isTraceQueryPluginLoading )
 
   const queryTypeMap = useMemo(() => {
+    // JZ NOTES: do we need to type this so strictly? can we just leave this empty
+    // and build the map as we iterate through the queryPlugins in the next block? 
     const map: Record<string, string[]> = {
       TimeSeriesQuery: [],
+      TraceQuery: [],
     };
 
+    // JZ NOTES: create a map of key:pluginType value:pluginKind
+    // (e.g. map: {"TimeSeriesQuery":["PrometheusTimeSeriesQuery"],"TraceQuery":["TempoTraceQuery"]} )
     if (timeSeriesQueryPlugins) {
       timeSeriesQueryPlugins.forEach((plugin) => {
-        map['TimeSeriesQuery']?.push(plugin.kind);
+        // console.log("JZ .forEach(plugin) -- plugin = ", plugin.pluginType)
+        // console.log("JZ map[plugin.pluginType] -- ", map[plugin.pluginType])
+        // map['TimeSeriesQuery']?.push(plugin.kind);
+        map[plugin.pluginType]?.push(plugin.kind)
       });
     }
 
     return map;
-  }, [timeSeriesQueryPlugins]);
+  }, [timeSeriesQueryPlugins, traceQueryPlugins]);
+  // console.log("JZ map: ", JSON.stringify(queryTypeMap))
 
   const getQueryType = useCallback(
     (pluginKind: string) => {

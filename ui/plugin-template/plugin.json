@@ -1,0 +1,26 @@
+{
+  "kind": "PluginModule",
+  "metadata": {
+    "name": "Tempo"
+  },
+  "spec": {
+    "plugins": [
+      {
+        "pluginType": "TimeSeriesQuery",
+        "kind": "TempoTimeSeriesQuery",
+        "display": {
+          "name": "Tempo Range Query",
+          "description": ""
+        }
+      },
+      {
+        "pluginType": "Datasource",
+        "kind": "TempoDatasource",
+        "display": {
+          "name": "Tempo Datasource",
+          "description": ""
+        }
+      }
+    ]
+  }
+}

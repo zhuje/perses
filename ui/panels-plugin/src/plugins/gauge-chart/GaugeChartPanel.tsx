@@ -28,11 +28,15 @@ const PANEL_PADDING_OFFSET = 20;
 export type GaugeChartPanelProps = PanelProps<GaugeChartOptions>;
 
 export function GaugeChartPanel(props: GaugeChartPanelProps) {
+
+  // JZ NOTES: Get dashboard defintions 
   const { spec: pluginSpec, contentDimensions } = props;
   const { calculation, max } = pluginSpec;
 
+  // JZ NOTES: getChartsTheme
   const { thresholds: thresholdsColors } = useChartsTheme();
 
+  // 
   const { queryResults, isLoading } = useDataQueries('TimeSeriesQuery');
 
   // ensures all default unit properties set if undef
