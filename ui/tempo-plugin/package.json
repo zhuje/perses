@@ -1,0 +1,8 @@
+{
+    "name": "@perses-dev/tempo-plugin",
+    "version": "0.39.0",
+    "description": "The plugin feature in Perses",
+    "scripts": {
+      "test": "jest"
+    }
+}
