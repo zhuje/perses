@@ -13,13 +13,17 @@
 
 import React from 'react';
 import { renderHook } from '@testing-library/react';
-import { MOCK_TIME_SERIES_DATA } from '../../test';
+import { MOCK_TIME_SERIES_DATA, MOCK_TRACE_DATA } from '../../test';
 import { useListPluginMetadata } from '../plugin-registry';
 import { DataQueriesProvider, useDataQueries } from './DataQueriesProvider';
 import { useQueryType } from './model';
 
 jest.mock('../time-series-queries', () => ({
   useTimeSeriesQueries: jest.fn().mockImplementation(() => [{ data: MOCK_TIME_SERIES_DATA }]),
+}));
+
+jest.mock('../trace-queries', () => ({
+  useTraceQueries: jest.fn().mockImplementation(() => [{ data: MOCK_TRACE_DATA }]),
 }));
 
 jest.mock('../plugin-registry', () => ({
@@ -32,16 +36,29 @@ jest.mock('../plugin-registry', () => ({
         kind: 'PrometheusTimeSeriesQuery',
         pluginType: 'TimeSeriesQuery',
       },
+      {
+        display: {
+          name: 'Tempo Empty Query {}',
+        },
+        kind: 'TempoTraceQuery',
+        pluginType: 'TraceQuery',
+      },
     ],
     isLoading: false,
   })),
 }));
 
 describe('useDataQueries', () => {
-  it('should return the correct data for TimeSeriesQuery', () => {
+  it('should return the correct data for TimeSeriesQuery and TraceQuery', () => {
     const definitions = [
       {
         kind: 'PrometheusTimeSeriesQuery',
+        spec: {
+          query: 'up',
+        },
+      },
+      {
+        kind: 'TempoTraceQuery',
         spec: {
           query: 'up',
         },
@@ -52,10 +69,18 @@ describe('useDataQueries', () => {
       return <DataQueriesProvider definitions={definitions}>{children}</DataQueriesProvider>;
     };
 
+    //JZ test TimeSeriesQuery
     const { result } = renderHook(() => useDataQueries('TimeSeriesQuery'), {
       wrapper,
     });
     expect(result.current.queryResults[0]?.data).toEqual(MOCK_TIME_SERIES_DATA);
+
+    // JZ test TraceQuery 
+    const { result:traceResult } = renderHook(() => useDataQueries('TraceQuery'), {
+      wrapper,
+    });
+    console.log('JZ Traceresults : ', JSON.stringify(traceResult, null, 3))
+    expect(traceResult.current.queryResults[0]?.data).toEqual(MOCK_TRACE_DATA);
   });
 });
 
@@ -64,7 +89,21 @@ describe('useQueryType', () => {
     const { result } = renderHook(() => useQueryType());
 
     const getQueryType = result.current;
+    // JZ NOTES: PrometheusTimeSeriesQuery is the plugin.kind, TimeSeriesQuery is the query.kind 
+    // "queries": [
+    //   {
+    //     "kind": "TimeSeriesQuery",
+    //     "spec": {
+    //       "plugin": {
+    //         "kind": "PrometheusTimeSeriesQuery",
+    //         "spec": {
+    //           "query": "rate(caddy_http_response_duration_seconds_sum[$interval])"
+    //         }
+    //       }
+    //     }
+    //   }
     expect(getQueryType('PrometheusTimeSeriesQuery')).toBe('TimeSeriesQuery');
+    expect(getQueryType('TempoTraceQuery')).toBe('TraceQuery');
   });
 
   it('should throw an error if query type is not found ', () => {

@@ -22,6 +22,10 @@ import {
   QueryData,
   useQueryType,
 } from './model';
+import { UnknownSpec } from '@perses-dev/core';
+import { QueryDefinition } from '@perses-dev/core';
+import { UseQueryResult } from '@tanstack/react-query';
+import { useTraceQueries } from '../trace-queries';
 
 export const DataQueriesContext = createContext<DataQueriesContextType | undefined>(undefined);
 
@@ -33,6 +37,7 @@ export function useDataQueriesContext() {
   return ctx;
 }
 
+// JZ NOTES: 'QueryType' also is hardcoded -- defines expected model for response data 
 export function useDataQueries<T extends keyof QueryType>(queryType: T): UseDataQueryResults<QueryType[T]> {
   const ctx = useDataQueriesContext();
 
@@ -56,13 +61,61 @@ export function useDataQueries<T extends keyof QueryType>(queryType: T): UseData
   return filteredCtx;
 }
 
+type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
+
+const jsonPrint = (obj:{}) => {
+  return JSON.stringify(obj, null, 3)
+}
+
 export function DataQueriesProvider(props: DataQueriesProviderProps) {
+  // JZ NOTES: Defintions are dashboard Defintions 
+  // {
+  //   kind: 'PrometheusTimeSeriesQuery',
+  //   spec: {
+  //     query: 'up',
+  //   },
+  // },
+  // {
+  //   kind: 'TempoTraceQuery',
+  //   spec: {
+  //     query: 'up',
+  //   },
+  // },
   const { definitions, options, children, queryOptions } = props;
 
+
+  // JZ NOTES: Returns a map of key: QueryTypes, Value: pluginTypes
+  // map:  {
+  //   TimeSeriesQuery: [ 'PrometheusTimeSeriesQuery' ],
+  //   TraceQuery: [ 'TempoTraceQuery' ]
+  // }
   const getQueryType = useQueryType();
 
+
+  // JZ Notes: Create a new map of all the dashboard defintions 
+  // JZ QUESTION: Aren't we already formatting the dashboard defintions like this?
+  // Seems like we're duplicating data...
+  // {
+  //   kind: "TimeSeriesQuery",
+  //   spec: {
+  //     plugin: {
+  //       kind: "PrometheusTimeSeriesQuery",
+  //       spec: {
+  //         query:
+  //           'node_load1{instance=~"(demo.do.prometheus.io:9100)"}',
+  //         series_name_format: "job - {{job}}, {{env}} {{instance}}",
+  //       },
+  //     },
+  //   },
+  // },
   const queryDefinitions = definitions.map((definition) => {
     const type = getQueryType(definition.kind);
+    console.log("JZ defintion = ", definition)
+    console.log("JZ type = ",  JSON.stringify({
+      kind: type,
+      spec: {
+        plugin: definition,
+      }}, null, 3 ))
     return {
       kind: type,
       spec: {
@@ -77,12 +130,101 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   ) as TimeSeriesQueryDefinition[];
   const timeSeriesResults = useTimeSeriesQueries(timeSeriesQueries, options, queryOptions);
 
+  // console.log("JZ TimeSeriesQueries : ", JSON.stringify(timeSeriesQueries));
+  //     JZ TimeSeriesQueries :  [{"kind":"TimeSeriesQuery","spec":{"plugin":{"kind":"PrometheusTimeSeriesQuery","spec":{"query":"up"}}}}]
+  // console.log("JZ timeSeriesResults : ", timeSeriesResults);
+  //     JZ TimeSeriesQueries :  [ { data: { timeRange: [Object], stepMs: 24379, series: [Array] } } ]
+
+  // JZ NOTES -- filter for TraceQueries and fetch TemoData from traceQueries
+  // MOCKED right now for testing 
+  const traceQueries = queryDefinitions.filter(
+    (definition) => definition.kind === 'TraceQuery'
+  ) as TraceQueryDefinition[];
+  // console.log("JZ TraceQuery : ", JSON.stringify(traceQueries));
+  const traceResults = useTraceQueries() as UseQueryResult[] 
+
+
   const refetchAll = useCallback(() => {
     timeSeriesResults.forEach((result) => result.refetch());
+    traceResults;
   }, [timeSeriesResults]);
 
+  const allResults = [...timeSeriesResults, ...traceResults];
+  const allQueries =[...timeSeriesQueries, ...traceQueries];
+
   const ctx = useMemo(() => {
-    const mergedQueryResults = [...transformQueryResults(timeSeriesResults, timeSeriesQueries)];
+    const mergedQueryResults = [...transformQueryResults(allResults, allQueries)];
+    // console.log("JZ mergeQueryResults : ", jsonPrint(mergedQueryResults))
+    //   JZ mergeQueryResults :  [
+    //     {
+    //        "definition": {
+    //           "kind": "TimeSeriesQuery",
+    //           "spec": {
+    //              "plugin": {
+    //                 "kind": "PrometheusTimeSeriesQuery",
+    //                 "spec": {
+    //                    "query": "up"
+    //                 }
+    //              }
+    //           }
+    //        },
+    //        "data": {
+    //           "timeRange": {
+    //              "start": "2022-10-24T15:31:30.000Z",
+    //              "end": "2022-10-24T15:32:15.000Z"
+    //           },
+    //           "stepMs": 24379,
+    //           "series": [
+    //              {
+    //                 "name": "device=\"/dev/vda1\", env=\"demo\", fstype=\"ext4\", instance=\"demo.do.prometheus.io:9100\", job=\"node\", mountpoint=\"/\"",
+    //                 "values": [
+    //                    [
+    //                       1666479357903,
+    //                       0.27700745551584494
+    //                    ],
+    //                    [
+    //                       1666479382282,
+    //                       0.27701284657366565
+    //                    ]
+    //                 ]
+    //              },
+    //              {
+    //                 "name": "device=\"/dev/vda15\", env=\"demo\", fstype=\"vfat\", instance=\"demo.do.prometheus.io:9100\", job=\"node\", mountpoint=\"/boot/efi\"",
+    //                 "values": [
+    //                    [
+    //                       1666479357903,
+    //                       0.08486496097624885
+    //                    ],
+    //                    [
+    //                       1666479382282,
+    //                       0.08486496097624885
+    //                    ]
+    //                 ]
+    //              }
+    //           ]
+    //        }
+    //     },
+    //     {
+    //        "definition": {
+    //           "kind": "TraceQuery",
+    //           "spec": {
+    //              "plugin": {
+    //                 "kind": "TempoTraceQuery",
+    //                 "spec": {
+    //                    "query": "up"
+    //                 }
+    //              }
+    //           }
+    //        },
+    //        "data": {
+    //           "traceID": "1234",
+    //           "rootServiceName": "fooServiceName",
+    //           "rootTraceName": "barTraceName",
+    //           "startTimeUnixNano": "5678",
+    //           "durationMs": "90"
+    //        }
+    //     }
+    //  ]
 
     return {
       queryResults: mergedQueryResults,
