@@ -11,11 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './builtin-variables';
-export * from './datasources';
-export * from './plugin-registry';
-export * from './template-variables';
-export * from './TimeRangeProvider';
-export * from './time-series-queries';
-export * from './trace-queries';
-export * from './DataQueriesProvider';
+import type { Config } from '@jest/types';
+import shared from '../jest.shared';
+
+const jestConfig: Config.InitialOptions = {
+  ...shared,
+
+  //setupFilesAfterEnv: [...(shared.setupFilesAfterEnv ?? []), '<rootDir>/src/test/setup-tests.ts'],
+};
+
+export default jestConfig;

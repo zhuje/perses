@@ -32,6 +32,7 @@ export interface QueryDefinition<Kind = any, PluginSpec = UnknownSpec> {
  */
 export interface QueryType {
   TimeSeriesQuery: TimeSeriesData;
+  TraceQuery: string; 
   // in the future we can add other query plugin and data types
   // for example: we can add something like `LogsQuery: LogsData;`
 }
