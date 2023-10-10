@@ -8,20 +8,9 @@ export type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'Tr
 export const TRACE_QUERY_KEY = 'TraceQuery';
 
 // JZ NOTES: TODO -- currently for testing 
-export function useTraceQueries() {
+export function useMockTraceQueries() {
     return [
         { 
-            // definition: {
-            //     kind: "TraceQuery",
-            //     spec: {
-            //         plugin: {
-            //             kind: "TempoTraceQuery",
-            //             spec: {
-            //                 query: "up"
-            //             }
-            //         }
-            //     }
-            // },
             data :  {
                 traceID: "0987",
                 rootServiceName: "fooServiceName",
@@ -39,20 +28,24 @@ export function useTraceQueries() {
  * Run a trace query using a plugin and return the results 
  * @param definition: dashboard defintion for a trace query
  */
-export function useTraceQueryImpl (
+export function useTraceQueries (
     definitions: TraceQueryDefinition[],
 ) {
 
     // JZ NOTES: test only one defintion for now 
     const definition = definitions[0] as TraceQueryDefinition;
 
-    console.log('JZ Definition : ', definition)
+    console.log('JZ traceImpl Definition : ', definition)
+
+    // JZ NOTEs: TODO: replace this mock when loading Plugin
+    // Need to find where the dynamicPluginLoader is located for the 
+    // local demo application. 
     
 
    // Get Trace Plugin 
     const { data: plugin } = usePlugin(TRACE_QUERY_KEY, definition.spec.plugin.kind);
 
-    console.log("useTraceQueryImpl: plugin " , plugin)
+    console.log("JZ traceImpl useTraceQueryImpl: plugin " , plugin)
 
     // Get datasource 
     const datasourceStore = useDatasourceStore();

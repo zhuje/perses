@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
-  "include": ["src", "src/components", "src/model/my-model.tsx"],
+  "include": ["src", "src/components", "src/model/my-model.tsx", "TempoDataSource.tsx", "TempoTraceQuery.tsx"],
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",

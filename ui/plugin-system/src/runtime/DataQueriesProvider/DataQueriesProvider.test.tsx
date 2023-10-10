@@ -17,17 +17,21 @@ import { MOCK_TIME_SERIES_DATA, MOCK_TRACE_DATA } from '../../test';
 import { useListPluginMetadata } from '../plugin-registry';
 import { DataQueriesProvider, useDataQueries } from './DataQueriesProvider';
 import { useQueryType } from './model';
-import { useTraceQueryImpl } from '../trace-queries';
 import { TraceQueryDefinition } from '../trace-queries';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
+import { waitFor } from '@testing-library/react';
+import fetch from 'node-fetch'
+(global as any).fetch = fetch;
+import { act } from '@testing-library/react';
 
 jest.mock('../time-series-queries', () => ({
   useTimeSeriesQueries: jest.fn().mockImplementation(() => [{ data: MOCK_TIME_SERIES_DATA }]),
 }));
 
-// jest.mock('../trace-queries', () => ({
-//   useTraceQueries: jest.fn().mockImplementation(() => [{ data: MOCK_TRACE_DATA }]),
-// }));
+jest.mock('../trace-queries', () => ({
+  useTraceQueries: jest.fn().mockImplementation(() => [{ data: MOCK_TRACE_DATA }]),
+}));
 
 jest.mock('../trace-queries', () => {
   const originalModule = jest.requireActual('../trace-queries');
@@ -39,27 +43,27 @@ jest.mock('../trace-queries', () => {
   };
 });
 
-// jest.mock('../plugin-registry', () => ({
-//   useListPluginMetadata: jest.fn().mockImplementation(() => ({
-//     data: [
-//       {
-//         display: {
-//           name: 'Prometheus Range Query',
-//         },
-//         kind: 'PrometheusTimeSeriesQuery',
-//         pluginType: 'TimeSeriesQuery',
-//       },
-//       {
-//         display: {
-//           name: 'Tempo Empty Query {}',
-//         },
-//         kind: 'TempoTraceQuery',
-//         pluginType: 'TraceQuery',
-//       },
-//     ],
-//     isLoading: false,
-//   })),
-// }));
+jest.mock('../plugin-registry', () => ({
+  useListPluginMetadata: jest.fn().mockImplementation(() => ({
+    data: [
+      {
+        display: {
+          name: 'Prometheus Range Query',
+        },
+        kind: 'PrometheusTimeSeriesQuery',
+        pluginType: 'TimeSeriesQuery',
+      },
+      {
+        display: {
+          name: 'Tempo Empty Query {}',
+        },
+        kind: 'TempoTraceQuery',
+        pluginType: 'TraceQuery',
+      },
+    ],
+    isLoading: false,
+  })),
+}));
 
 jest.mock('../plugin-registry', () => {
   const originalModule = jest.requireActual('../plugin-registry');
@@ -91,8 +95,10 @@ jest.mock('../plugin-registry', () => {
 
 
 
-
-describe('useDataQueries', () => {
+/**
+ * JZ NOTES: Should fetch the correct resultsArray[] for a given queryType 
+ */
+describe.only('useDataQueries', () => {
   it('should return the correct data for TimeSeriesQuery and TraceQuery', () => {
     const definitions = [
       {
@@ -130,6 +136,9 @@ describe('useDataQueries', () => {
 
 });
 
+/**
+ * JZ NOTES: modified useQueryType -- need to clean this up 
+ */
 describe('useQueryType', () => {
   it('should return the correct query type for a given plugin kind', () => {
     const { result } = renderHook(() => useQueryType());
@@ -169,44 +178,19 @@ describe('useQueryType', () => {
 });
 
 
-// describe.only('useTraceQueryImpl', () => {
-//   it('testing useTraceQueryImpl, should return Tempo traces', () => {
-
-//     const queryDefinitions = [
-//       {
-//         kind: "TraceQuery",
-//         spec: {
-//           plugin: {
-//             kind: "TemopoTraceQuery",
-//             spec: {
-//               query:'{}',
-//             },
-//           },
-//         },
-//       },
-//     ]
-//     const traceQueries = queryDefinitions.filter(
-//       (definition) => definition.kind === 'TraceQuery'
-//     ) as TraceQueryDefinition[];
-//     const traceQuery = traceQueries[0] as TraceQueryDefinition
-
-//     // LEFT OFF HERE OCT 4 , 2023 6:24 
-//     useTraceQueryImpl(traceQuery); 
-//  });
-
-
-
-// JZ Creating an end to end test 
+// JZ NOTES: TODO
 // 1) load Tracing Plugin to PluginRegistry 
 // 2) load datasource into DataSourceStore 
-// 3) fetch data from DataQueryPlugin 
-// 3.1) DataQueryPlugin 
+// 3) fetch data from DataQueryProvider DONE 
+// 3.1) DataQueryPlugin DONE
 // ---- reads the dashboard defintions 
 // ---- creates seperate arrays for different query types via .filter()
 // ---- results are fetched on the seperate query arrays 
 // ---- PrometheusTimeSeriesQuery === useTimeSeriesQueries(dashboardDefinitions) 
 // ---- TempoTraceQuery === useTraceQueries(dashboardDefinitions)
-test('useTraceQueryImpl', () => {
+test.skip('useTraceQueryImpl', async () => {
+  // Currently, we're hard coding the not using any of the Providers. 
+  // Defintions is used for the PluginRegistry. TODO for end to end testing.
   const definitions = [
     {
       kind: 'TraceQuery',
@@ -221,25 +205,38 @@ test('useTraceQueryImpl', () => {
     },
   ] as TraceQueryDefinition[];
 
+  // The following code only tests the API call without Providers. 
+  // Must be running Tempo at localhost:3200. See webpack.dev.ts which 
+  // proxies to this port -- this is so we can circuvment CORS issues. 
+  // devServer: {
+  //   ...
+  //   proxy: {
+  //     '/tempo': 'http://localhost:3200/api/search?{}' // JZ NOTES: for testing 
+  //   },
 
-  const { result } = renderHook(() => useTraceQueryImpl(definitions));
-  expect(result).toBe('hello world')
-
-
-  // JZ LEFT OFF HERE OCT 5, 2023 5PM
-  function getTraceData() {
-
+  // hold tempo API request 
+  async function getTraceData(){
+    const url = 'http://localhost:3000/tempo/api/search?{}'
+    return (await fetch(url, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      }
+    })).json()
   }
 
-  const queryKey = [definitions] as const
-  const queryFn = () => {
-    return getTraceData;
+  // use the useQuery function to handle fetching from Tempo API 
+  function useCustomHook() {
+    return useQuery({ queryKey: ['customHook'], queryFn: () => getTraceData() });
   }
+  // A QueryClient wrapper is needed to utilize useQuery
+  const queryClient = new QueryClient();
+  const wrapper = ({ children} : React.PropsWithChildren ) => (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
 
-  useQuery({
-    queryKey: queryKey, 
-    queryFn: queryFn, 
-  })
-
-
+  // Test Tempo API call with useQuery()
+  const { result } = renderHook(() => useCustomHook(), { wrapper });
+  await waitFor(() => expect(result.current.isLoading).toBe(false)).then(()=> console.log("JZ test tempo API call with useQuery(): ", JSON.stringify(result, null, 3)));
 })

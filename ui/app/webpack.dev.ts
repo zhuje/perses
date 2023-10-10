@@ -70,6 +70,7 @@ const devConfig: Configuration = {
     proxy: {
       '/api': 'http://localhost:8080',
       '/proxy': 'http://localhost:8080',
+      '/tempo': 'http://localhost:3200/api/search?{}' // JZ NOTES: for testing 
     },
     client: {
       // By default, the error overlay is not shown because it can get in the

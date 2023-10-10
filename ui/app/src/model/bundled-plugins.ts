@@ -11,7 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import prometheusResource from '@perses-dev/prometheus-plugin/plugin.json';
-import panelsResource from '@perses-dev/panels-plugin/plugin.json';
+import panelsResource from '@perses-dev/panels-plugin/plugin.json'
+import tempoResource from '../../../tempo-plugin/plugin.json' 
+// JZ TODO: need help. How do you declare a module? ^ '@perse-dev/tempo-plugin/plugin.json' 
+// index.ts and then npm run build?
+
 import { PluginLoader, PluginModuleResource, dynamicImportPluginLoader } from '@perses-dev/plugin-system';
 
 /**
@@ -25,5 +29,9 @@ export const bundledPluginLoader: PluginLoader = dynamicImportPluginLoader([
   {
     resource: panelsResource as PluginModuleResource,
     importPlugin: () => import('@perses-dev/panels-plugin'),
+  },
+  {
+    resource: tempoResource as PluginModuleResource,
+    importPlugin: () => import('../../../tempo-plugin/'),
   },
 ]);

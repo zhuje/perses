@@ -6,10 +6,10 @@
   "spec": {
     "plugins": [
       {
-        "pluginType": "TimeSeriesQuery",
-        "kind": "TempoTimeSeriesQuery",
+        "pluginType": "TraceQuery",
+        "kind": "TempoTraceQuery",
         "display": {
-          "name": "Tempo Range Query",
+          "name": "Tempo Trace Query",
           "description": ""
         }
       },

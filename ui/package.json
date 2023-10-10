@@ -3,6 +3,7 @@
   "description": "Monorepo for the Perses UI",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3200/",
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",

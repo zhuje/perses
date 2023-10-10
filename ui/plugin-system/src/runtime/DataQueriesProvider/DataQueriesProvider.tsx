@@ -26,7 +26,7 @@ import { UnknownSpec } from '@perses-dev/core';
 import { QueryDefinition } from '@perses-dev/core';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useTraceQueries } from '../trace-queries';
-import { useTraceQueryImpl } from '../trace-queries';
+import { useQuery } from '@tanstack/react-query';
 
 export const DataQueriesContext = createContext<DataQueriesContextType | undefined>(undefined);
 
@@ -71,11 +71,6 @@ export function useDataQueries<T extends keyof QueryType>(queryType: T): UseData
 
   return filteredCtx;
 }
-
-
-type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
-
-
 
 
 const jsonPrint = (obj:{}) => {
@@ -144,22 +139,44 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   //     JZ TimeSeriesQueries :  [ { data: { timeRange: [Object], stepMs: 24379, series: [Array] } } ]
 
   // JZ NOTES -- filter for TraceQueries and fetch TemoData from traceQueries
-  // MOCKED right now for testing 
-  const traceQueries = queryDefinitions.filter(
-    (definition) => definition.kind === 'TraceQuery'
-  ) as TraceQueryDefinition[];
+  // const traceQueries = queryDefinitions.filter(
+  //   (definition) => definition.kind === 'TraceQuery'
+  // ) as TraceQueryDefinition[];
 
+  // JZ NOTES: TODO: Mocked Trace Query -- need to add to dashboard Defintiion
+  type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
+  const traceQueries =   [{
+      kind: "TraceQuery",
+      spec: {
+          plugin: {
+              kind: "TempoTraceQuery",
+              spec: {
+                  query: "{}"
+              }
+          }
+      }
+  }] as TraceQueryDefinition[];
 
   // TODO: implement useTraceQueries
-  const traceResults = useTraceQueries();
+  useTraceQueries(traceQueries);
 
 
+  // JZ NOTES: this code should be moved to useTraceQueries, here for testing purposes 
+  async function getTraceData(){
+    const url = 'http://localhost:3000/tempo/api/search?{}'
+    return (await fetch(url, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      }
+    })).json()
+  }
+  const traceResults = [useQuery({ queryKey: ['customHook'], queryFn: () => getTraceData()})]  
+  console.warn('JZ traceQueryResults , ', traceResults)
 
   // const testTraceQuery = traceQueries[0] as TraceQueryDefinition
   // console.log("JZ TraceQuery : ", JSON.stringify(traceQueries));
   // console.log("JZ testTraceQuery : ", JSON.stringify(testTraceQuery));
   // const traceResultImpl = useTraceQueryImpl(testTraceQuery); 
-
   // console.log('TraceResults : ', JSON.stringify(traceResults));
 
 
