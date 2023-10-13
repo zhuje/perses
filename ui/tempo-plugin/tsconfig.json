@@ -1,11 +1,11 @@
 {
   "extends": "../tsconfig.base.json",
-  "include": ["src", "src/components", "src/model/my-model.tsx", "TempoDataSource.tsx", "TempoTraceQuery.tsx"],
+  "include": ["src"],
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
     "paths": {
-      "@perses-dev/plugin-template": ["./src"]
+      "@perses-dev/tempo-plugin": ["./src"]
     }
   }
 }

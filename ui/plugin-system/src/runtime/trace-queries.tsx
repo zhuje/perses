@@ -3,6 +3,7 @@ import { usePlugin } from "./plugin-registry";
 import { useDatasourceStore } from "./datasources";
 import { useQuery } from "@tanstack/react-query";
 import { UseQueryResult } from "@tanstack/react-query";
+import { usePluginRegistry } from "./plugin-registry";
 
 export type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
 export const TRACE_QUERY_KEY = 'TraceQuery';
@@ -32,23 +33,19 @@ export function useTraceQueries (
     definitions: TraceQueryDefinition[],
 ) {
 
+    const { getPlugin } = usePluginRegistry();
+
     // JZ NOTES: test only one defintion for now 
     const definition = definitions[0] as TraceQueryDefinition;
-
     console.log('JZ traceImpl Definition : ', definition)
-
-    // JZ NOTEs: TODO: replace this mock when loading Plugin
-    // Need to find where the dynamicPluginLoader is located for the 
-    // local demo application. 
-    
 
    // Get Trace Plugin 
     const { data: plugin } = usePlugin(TRACE_QUERY_KEY, definition.spec.plugin.kind);
-
     console.log("JZ traceImpl useTraceQueryImpl: plugin " , plugin)
 
     // Get datasource 
     const datasourceStore = useDatasourceStore();
+    console.log('JZ traceImpl datasourceStore : ', datasourceStore)
 
     // Create a context for the query, this includes the datasource but 
     // also other variables, which at this time are removed for simplicity.
@@ -67,10 +64,16 @@ export function useTraceQueries (
         return plugin.getTraceData(definition.spec.plugin.spec, ctx)
     }
 
+    const queryFn2 = async ()=>{
+            const plugin = await getPlugin(TRACE_QUERY_KEY, definition.spec.plugin.kind);
+            const data = await plugin.getTraceData(definition.spec.plugin.spec, ctx);
+            console.log('JZ traceImpl queryFn > data' , data);
+    }
+
     // get response using React useQuery to handle fetching  
     return useQuery({
         queryKey: queryKey, 
-        queryFn: queryFn, 
+        queryFn: queryFn2,
     })
 }
 

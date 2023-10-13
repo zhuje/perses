@@ -35,6 +35,7 @@
     "panels-plugin",
     "plugin-system",
     "prometheus-plugin",
+    "tempo-plugin",
     "storybook"
   ],
   "devDependencies": {

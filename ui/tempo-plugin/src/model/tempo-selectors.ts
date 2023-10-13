@@ -21,6 +21,38 @@ export const TEMPO_DATASOURCE_KIND = 'TempoDatasource' as const;
 export interface TempoDatasourceSelector extends DatasourceSelector {
   kind: typeof TEMPO_DATASOURCE_KIND;
 }
+// JZ NOTES: Example Dashboard for a single panel with a datasource 
+// "panels": {
+//   "SingleLine": {
+//     "kind": "Panel",
+//     "spec": {
+//       "display": {
+//         "name": "Single Line",
+//         "description": "Time series chart with a single line"
+//       },
+//       "plugin": {
+//         "kind": "TimeSeriesChart",
+//         "spec": {}
+//       },
+//       "queries": [
+//         {
+//           "kind": "TimeSeriesQuery",
+//           "spec": {
+//             "plugin": {
+//               "kind": "PrometheusTimeSeriesQuery",
+//               "spec": {
+//                 "datasource": {
+//                   "kind": "PrometheusDatasource",
+//                   "name": "PrometheusDemo"
+//                 },
+//                 "query": "up{job=\"grafana\",instance=\"demo.do.prometheus.io:3000\"}"
+//               }
+//             }
+//           }
+//         }
+//       ]
+//     }
+//   },
 
 /**
  * A default selector that asks for the default Tempo Datasource.

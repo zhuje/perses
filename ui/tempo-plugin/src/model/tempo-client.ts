@@ -1,6 +1,6 @@
 import { fetch, RequestHeaders } from '@perses-dev/core';
-import { DatasourceClient } from '@perses-dev/plugin-system';
 import { QueryResponse, SearchResponse, SearchResult } from "./types";
+import { DatasourceClient } from '@perses-dev/plugin-system';
 
 /**
  * Create a search and query functions the Tempo client can perform. 

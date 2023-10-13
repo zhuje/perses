@@ -13,8 +13,10 @@
 import prometheusResource from '@perses-dev/prometheus-plugin/plugin.json';
 import panelsResource from '@perses-dev/panels-plugin/plugin.json'
 import tempoResource from '../../../tempo-plugin/plugin.json' 
-// JZ TODO: need help. How do you declare a module? ^ '@perse-dev/tempo-plugin/plugin.json' 
-// index.ts and then npm run build?
+// JZ TODO: this doesn't work ... need to figure out proper how to sim-link
+// import tempoResource from '@perses-dev/tempo-plugin/plugin.json'
+
+
 
 import { PluginLoader, PluginModuleResource, dynamicImportPluginLoader } from '@perses-dev/plugin-system';
 

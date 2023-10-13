@@ -3,6 +3,8 @@ import { searchTraces, queryTrace, searchAll, TempoClient } from '../model/tempo
 
 export interface TempoDatasourceSpec {
     direct_url?: string;
+    // add proxy options later -- see @perses-dev/prometheus-plugins/.../prometheusDatasourceSpec
+    // proxy?: HTTPProxy;
 }
 
 /**
