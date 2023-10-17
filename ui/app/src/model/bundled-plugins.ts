@@ -11,12 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import prometheusResource from '@perses-dev/prometheus-plugin/plugin.json';
-import panelsResource from '@perses-dev/panels-plugin/plugin.json'
-import tempoResource from '../../../tempo-plugin/plugin.json' 
-// JZ TODO: this doesn't work ... need to figure out proper how to sim-link
-// import tempoResource from '@perses-dev/tempo-plugin/plugin.json'
-
-
+import panelsResource from '@perses-dev/panels-plugin/plugin.json';
+import tempoResource from '@perses-dev/tempo-plugin/plugin.json';
 
 import { PluginLoader, PluginModuleResource, dynamicImportPluginLoader } from '@perses-dev/plugin-system';
 
@@ -34,6 +30,6 @@ export const bundledPluginLoader: PluginLoader = dynamicImportPluginLoader([
   },
   {
     resource: tempoResource as PluginModuleResource,
-    importPlugin: () => import('../../../tempo-plugin/'),
+    importPlugin: () => import('@perses-dev/tempo-plugin'),
   },
 ]);

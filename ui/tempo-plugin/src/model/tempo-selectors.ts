@@ -57,7 +57,7 @@ export interface TempoDatasourceSelector extends DatasourceSelector {
 /**
  * A default selector that asks for the default Tempo Datasource.
  */
-export const DEFAULT_PROM: TempoDatasourceSelector = { kind: TEMPO_DATASOURCE_KIND };
+export const DEFAULT_TEMPO: TempoDatasourceSelector = { kind: TEMPO_DATASOURCE_KIND };
 
 /**
  * Returns true if the provided TempoDatasourceSelector is the default one.

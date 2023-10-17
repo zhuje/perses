@@ -1,10 +1,11 @@
 import { DatasourcePlugin } from '@perses-dev/plugin-system';
 import { searchTraces, queryTrace, searchAll, TempoClient } from '../model/tempo-client';
+import { HTTPProxy } from '@perses-dev/prometheus-plugin/dist/plugins/PrometheusDatasourceEditor';
 
 export interface TempoDatasourceSpec {
     direct_url?: string;
     // add proxy options later -- see @perses-dev/prometheus-plugins/.../prometheusDatasourceSpec
-    // proxy?: HTTPProxy;
+    proxy?: HTTPProxy;
 }
 
 /**
@@ -25,7 +26,7 @@ const createClient: DatasourcePlugin<TempoDatasourceSpec, TempoClient>['createCl
       datasourceUrl,
     },
     searchAll: (query: string) => searchAll(query),
-    searchTraces: (query: string) => searchTraces(query),
+    searchTraces: (query: string) => searchTraces(query, datasourceUrl),
     queryTrace: (traceID: string) => queryTrace(traceID),
   };
 };

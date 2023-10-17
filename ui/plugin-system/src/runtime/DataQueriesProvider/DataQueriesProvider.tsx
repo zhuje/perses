@@ -131,6 +131,8 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   const timeSeriesQueries = queryDefinitions.filter(
     (definition) => definition.kind === 'TimeSeriesQuery'
   ) as TimeSeriesQueryDefinition[];
+
+  console.log("JZ /proxy  > DataQueriesProvider >  queryOptions: ", queryOptions);
   const timeSeriesResults = useTimeSeriesQueries(timeSeriesQueries, options, queryOptions);
 
   console.log("JZ TimeSeriesQueries : ", JSON.stringify(timeSeriesQueries));
@@ -161,17 +163,17 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   useTraceQueries(traceQueries);
 
 
-  // JZ NOTES: this code should be moved to useTraceQueries, here for testing purposes 
-  async function getTraceData(){
-    const url = 'http://localhost:3000/tempo/api/search?{}'
-    return (await fetch(url, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      }
-    })).json()
-  }
-  const traceResults = [useQuery({ queryKey: ['customHook'], queryFn: () => getTraceData()})]  
-  console.warn('JZ traceQueryResults , ', traceResults)
+  // // JZ NOTES: this code should be moved to useTraceQueries, here for testing purposes 
+  // async function getTraceData(){
+  //   const url = 'http://localhost:3000/tempo/api/search?{}'
+  //   return (await fetch(url, {
+  //     headers: {
+  //       "Access-Control-Allow-Origin": "*",
+  //     }
+  //   })).json()
+  // }
+  // const traceResults = [useQuery({ queryKey: ['customHook'], queryFn: () => getTraceData()})]  
+  // console.warn('JZ traceQueryResults , ', traceResults)
 
   // const testTraceQuery = traceQueries[0] as TraceQueryDefinition
   // console.log("JZ TraceQuery : ", JSON.stringify(traceQueries));
@@ -182,13 +184,13 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
 
   const refetchAll = useCallback(() => {
     timeSeriesResults.forEach((result) => result.refetch());
-    traceResults;
+    // traceResults;
   }, [timeSeriesResults]);
 
   const ctx = useMemo(() => {
     const mergedQueryResults = [
       ...transformQueryResults(timeSeriesResults, timeSeriesQueries), 
-      ...transformQueryResults(traceResults, traceQueries),
+      // ...transformQueryResults(traceResults, traceQueries),
     ];
     console.log("JZ mergeQueryResults : ", jsonPrint(mergedQueryResults))
     //   JZ mergeQueryResults :  [

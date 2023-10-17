@@ -103,6 +103,7 @@ export function DatasourceStoreProvider(props: DatasourceStoreProviderProps) {
     async function getClient<Client extends DatasourceClient>(selector: DatasourceSelector): Promise<Client> {
       const { kind } = selector;
       const [{ spec, proxyUrl }, plugin] = await Promise.all([findDatasource(selector), getPlugin('Datasource', kind)]);
+      console.log("JZ /proxy WHERE IS proxyURL coming frommmmmm : ", proxyUrl, spec)
 
       // allows extending client
       const client = plugin.createClient(spec.plugin.spec, { proxyUrl }) as Client;
