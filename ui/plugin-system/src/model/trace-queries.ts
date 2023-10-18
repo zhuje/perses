@@ -32,7 +32,7 @@ export interface Traces {
     rootTraceName: string; 
     startTimeUnixNano: string; 
     durationMs: number; 
-    spanSets: {
+    spanSets?: {
         matched: number; 
         spans: Spans[]; 
     }

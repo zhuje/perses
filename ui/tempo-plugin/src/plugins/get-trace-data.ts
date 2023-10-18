@@ -44,11 +44,20 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
     const client: TempoClient = await context.datasourceStore.getDatasourceClient(spec.datasource ?? defaultTempoDatasource);
     console.log('JZ /proxy traceImpl > tempo-plugin > getTraceData > client : ', client)
 
-    const response = await client.searchTraces('{}').then((response) => {
-        console.log("JZ traceImpl > tempo-plugin > getTraceData > response : ", JSON.stringify(response, null, 3))
-    })
-    response; 
-  
+    const datasourceUrl = client?.options?.datasourceUrl
+    if (!datasourceUrl){
+        console.error('Trace Query is missing a datasource')
+    }
+    
+    const response = await client.searchTraces('{}', client.options.datasourceUrl)
+    console.log("JZ traceImpl > tempo-plugin > getTraceData > response : ", JSON.stringify(response, null, 3))
+
+    const traceData: TraceData = {
+        
+    }
+
+    // NEEds to return as TRACE data not Search Response 
+    return response
 
 
 }

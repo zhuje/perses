@@ -60,8 +60,6 @@ export const getTimeSeriesData: TimeSeriesQueryPlugin<PrometheusTimeSeriesQueryS
   // Get the datasource, using the default Prom Datasource if one isn't specified in the query
   const client: PrometheusClient = await context.datasourceStore.getDatasourceClient(spec.datasource ?? DEFAULT_PROM);
 
-  console.log('JZ /proxy > getTimeSeriesData > client : ', client)
-
   // Make the request to Prom
   const response = await client.rangeQuery({
     query,

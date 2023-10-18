@@ -10,18 +10,16 @@ interface TempoClientOptions {
 
 export interface TempoClient extends DatasourceClient {
     options: TempoClientOptions;
-    searchAll(query: string) : Promise<SearchResult>;
+    searchAll(query: string, datasourceUrl:string) : Promise<SearchResult>;
     searchTraces(query: string, datasourceUrl:string) : Promise<SearchResponse>;
-    queryTrace(traceID: string) : Promise<QueryResponse>;
+    queryTrace(traceID: string, datasourceUrl:string) : Promise<QueryResponse>;
 }
 
 /**
  * Create a search and query functions the Tempo client can perform. 
  */
 export const executeRequest = async <T>(url: string): Promise<T> => {
-    console.log("JZ traceImpl > tempo-plugin > executeRequest url :", url);
     const response = await fetch(url);
-    console.log("JZ traceImpl > tempo-plugin > executeRequest >  response :", response);
     const jsonData = await response.json();
     console.log("JZ traceImpl > tempo-plugin > executeRequest >  jsonData :", jsonData);
 
@@ -40,30 +38,32 @@ export interface SearchTracesQuery{
     end?: number;
 }
 
-function fetchWithGet(apiURI: string,  datasourceUrl:string) {
+function fetchWithGet<TResponse>(apiURI: string,  datasourceUrl:string) {
     let url = `${datasourceUrl}${apiURI}`;
-    executeRequest(url)
+    return executeRequest<TResponse>(url)
 }
 
 
-export function searchTracesQuery(q: string, datasourceUrl: string) {
-    return fetchWithGet(`tempo/api/search?=${q}`, datasourceUrl)
-}
+// export function searchTracesQuery(q: string, datasourceUrl: string) {
+//     return fetchWithGet(`tempo/api/search?=${q}`, datasourceUrl)
+// }
 
  
-export const searchTraces = async (query: string, datasourceUrl:string): Promise<SearchResponse> => {
+export function searchTraces(query: string, datasourceUrl:string):Promise<SearchResponse> {
     // return await executeRequest(`/api/search?${new URLSearchParams({ q })}`);
-    console.log('JZ /proxy fetchWithGet', fetchWithGet(`/api/search?${query}`, datasourceUrl));
-    return await executeRequest(`tempo/api/search?=${query}`);
+    // console.log('JZ /proxy fetchWithGet', fetchWithGet(`/api/search?${query}`, datasourceUrl));
+    // return await executeRequest(`tempo/api/search?=${query}`);
+    return fetchWithGet<SearchResponse>(`/api/search?${query}`, datasourceUrl)
 };
 
-export const queryTrace = async (traceID: string): Promise<QueryResponse> => {
-    return executeRequest(`/api/traces/${traceID}`);
+export function queryTrace (traceID: string, datasourceUrl: string) {
+    // return executeRequest(`/api/traces/${traceID}`);
+    return fetchWithGet<QueryResponse>(`/api/traces/${traceID}`, datasourceUrl)
 };
 
 // search and query all received traces
-export const searchAll = async (query: string): Promise<SearchResult> => {
-    const searchResponse = await searchTraces(query);
+export async function searchAll(query: string, datasourceUrl: string){
+    const searchResponse = await searchTraces(query, datasourceUrl);
     if (!searchResponse.traces) {
         return { query, traces: [] };
     }
@@ -72,10 +72,12 @@ export const searchAll = async (query: string): Promise<SearchResult> => {
         query,
         traces: await Promise.all(searchResponse.traces.map(async trace => ({
             summary: trace,
-            trace: await queryTrace(trace.traceID)
+            trace: await queryTrace(trace.traceID, datasourceUrl)
         }))),
     }
 };
+
+
 
 
 

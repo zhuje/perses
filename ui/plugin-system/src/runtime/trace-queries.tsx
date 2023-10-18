@@ -46,6 +46,11 @@ export const DEFAULT_TEMPO: TempoDatasourceSelector = {
 export async function useTraceQueries (
     definitions: TraceQueryDefinition[],
 ) {
+
+    if (!definitions){
+        return;
+    }
+
     // JZ NOTES: test only one defintion for now 
     const definition = definitions[0] as TraceQueryDefinition;
     console.log('JZ traceImpl Definition : ', definition)
@@ -108,7 +113,7 @@ export async function useTraceQueries (
     return useQuery({
         queryKey: queryKey, 
         queryFn: queryFn2,
-    })
+    }) 
 }
 
     
