@@ -1,16 +1,16 @@
 
 import { TraceQueryPlugin } from "@perses-dev/plugin-system"
 import { TempoTraceQuerySpec } from "../model/trace-query-model"
-import { TraceData } from "@perses-dev/plugin-system";
-import { DEFAULT_TEMPO } from "../model/tempo-selectors";
 import { TEMPO_DATASOURCE_KIND } from "../model/tempo-selectors";
 import { TempoDatasourceSelector } from "../model/tempo-selectors";
 import { TempoClient } from "../model/tempo-client";
+import { TraceData } from "@perses-dev/core";
 
 export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData'] = async (
     spec, 
     context 
 ) => {
+    // JZ mock data response 
     // const data = {
     //     traces: [
     //     {
@@ -25,14 +25,13 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
     //         }
     //     }
     //     ] 
-    // }
-    // return data;
-
+    // } 
    
     if (spec.query === undefined || spec.query === null || spec.query === '') {
-        // Do not make a request to the backend, instead return an empty TimeSeriesData
-        return { series: [] };
+        // Do not make a request to the backend, instead return an empty TraceData
+        return { traces: [] };
     }
+
 
     const defaultTempoDatasource: TempoDatasourceSelector = { 
         kind: TEMPO_DATASOURCE_KIND, 
@@ -42,34 +41,20 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
     };
 
     const client: TempoClient = await context.datasourceStore.getDatasourceClient(spec.datasource ?? defaultTempoDatasource);
-    console.log('JZ /proxy traceImpl > tempo-plugin > getTraceData > client : ', client)
 
     const datasourceUrl = client?.options?.datasourceUrl
     if (!datasourceUrl){
         console.error('Trace Query is missing a datasource')
     }
     
-    const response = await client.searchTraces('{}', client.options.datasourceUrl)
-    console.log("JZ traceImpl > tempo-plugin > getTraceData > response : ", JSON.stringify(response, null, 3))
+    const response = await client.searchTraces(spec.query, client.options.datasourceUrl)
+    console.log('JZ /response : ', response)
 
     const traceData: TraceData = {
-        
+        traces: response.traces
     }
 
     // NEEds to return as TRACE data not Search Response 
-    return response
-
-
+    return traceData
 }
 
-
-// export function getTraceData(){
-//     return 'helloworld'
-// }
-
-
-
-
-export function TempoTraceQuery() {
-    return 'hello world'
-}

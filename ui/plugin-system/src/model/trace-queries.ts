@@ -12,15 +12,17 @@
 // limitations under the License.
 
 import { Query, QueryKey } from '@tanstack/react-query';
-import { UnknownSpec, TimeSeriesData } from '@perses-dev/core';
+import { UnknownSpec } from '@perses-dev/core';
 import { DatasourceStore, VariableStateMap } from '../runtime';
 import { Plugin } from './plugin-base';
+// import { TraceData } from '@perses-dev/core';
 
 /**
  * JZ NOTE: TraceData -- current model for response from Tempo API 
- * source: https://grafana.com/docs/tempo/latest/api_docs/#search
  * TimeSeriesData, Traces, Spans interfaces should be moved to @perse/dev/ui/core/src/model/trace-data.ts 
  * to follow precedence of TimeSeriesData but leaving these interfaces here for now -- for easy of file managment.
+ * ** FAILED ** can't get '@perses-dev/core' to export `trace-data.ts`. Ran `npm build` on both /core and /plugin-systems. 
+ * \-____-\
  */
 export interface TraceData {
     traces: Traces[];

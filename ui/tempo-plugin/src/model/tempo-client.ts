@@ -1,7 +1,7 @@
 import { fetch, RequestHeaders } from '@perses-dev/core';
-import { QueryResponse, SearchResponse, SearchResult } from "./types";
+import { QueryResponse, TraceData, SearchResult } from "./types";
 import { DatasourceClient } from '@perses-dev/plugin-system';
-import { QueryOptions } from '@perses-dev/prometheus-plugin';
+
 
 interface TempoClientOptions {
     datasourceUrl: string;
@@ -11,7 +11,7 @@ interface TempoClientOptions {
 export interface TempoClient extends DatasourceClient {
     options: TempoClientOptions;
     searchAll(query: string, datasourceUrl:string) : Promise<SearchResult>;
-    searchTraces(query: string, datasourceUrl:string) : Promise<SearchResponse>;
+    searchTraces(query: string, datasourceUrl:string) : Promise<TraceData>;
     queryTrace(traceID: string, datasourceUrl:string) : Promise<QueryResponse>;
 }
 
@@ -49,11 +49,11 @@ function fetchWithGet<TResponse>(apiURI: string,  datasourceUrl:string) {
 // }
 
  
-export function searchTraces(query: string, datasourceUrl:string):Promise<SearchResponse> {
+export function searchTraces(query: string, datasourceUrl:string):Promise<TraceData> {
     // return await executeRequest(`/api/search?${new URLSearchParams({ q })}`);
     // console.log('JZ /proxy fetchWithGet', fetchWithGet(`/api/search?${query}`, datasourceUrl));
     // return await executeRequest(`tempo/api/search?=${query}`);
-    return fetchWithGet<SearchResponse>(`/api/search?${query}`, datasourceUrl)
+    return fetchWithGet<TraceData>(`/api/search?${query}`, datasourceUrl)
 };
 
 export function queryTrace (traceID: string, datasourceUrl: string) {

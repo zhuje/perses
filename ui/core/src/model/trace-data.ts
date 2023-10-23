@@ -1,6 +1,5 @@
 // source: https://grafana.com/docs/tempo/latest/api_docs/#search
 
-
 export interface TraceData {
     traces: Trace[];
 }
@@ -27,32 +26,4 @@ export interface Spans {
             stringValue: string;
         }
     }   
-}
-
-// export interface TraceSummary {
-//     traceID: string
-//     rootServiceName: string
-//     rootTraceName: string
-//     startTimeUnixNano: string
-//     durationMs: number
-// }
-
-// export interface SearchResponse {
-//     traces?: TraceSummary[];
-// }
-
-export interface QueryResponse {
-    batches: any;
-}
-
-export interface SearchResult {
-    /** the query which produced the search response */
-    query: string;
-    traces: {
-        summary: Trace,
-        stats?: {
-            spans: number,
-            errors: number,
-        }
-    }[];
 }

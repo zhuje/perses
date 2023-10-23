@@ -27,6 +27,7 @@ import { QueryDefinition } from '@perses-dev/core';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useTraceQueries } from '../trace-queries';
 import { useQuery } from '@tanstack/react-query';
+import { TraceQueryDefinition } from '../trace-queries'; // JZ TODO: need to move this into '@perses-dev/core'
 
 export const DataQueriesContext = createContext<DataQueriesContextType | undefined>(undefined);
 
@@ -52,13 +53,13 @@ export function useDataQueries<T extends keyof QueryType>(queryType: T): UseData
     (queryResult) => {
       console.log("JZ queryResult : ", printJSON(queryResult))
       console.log("JZ queryResult.definition : ", printJSON(queryResult.definition))
-      console.log("JZ queryResult.definition.kind : ", printJSON(queryResult.definition.kind))
-      return queryResult.definition.kind === queryType
+      console.log("JZ queryResult?.definition?.kind : ", printJSON(queryResult?.definition?.kind))
+      return queryResult?.definition?.kind === queryType
     }
   ) as Array<QueryData<QueryType[T]>>;
 
   // Filter the errors based on the specified query type
-  const filteredErrors = ctx.errors.filter((errors, index) => ctx.queryResults[index]?.definition.kind === queryType);
+  const filteredErrors = ctx.errors.filter((errors, index) => ctx.queryResults[index]?.definition?.kind === queryType);
 
   // Create a new context object with the filtered results and errors
   const filteredCtx = {
@@ -92,6 +93,7 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   //   },
   // },
   const { definitions, options, children, queryOptions } = props;
+  console.log('JZ /dashboard-defintion DataQueriesProvider > defintions :', definitions)
 
   // JZ Notes: given the plugin kind from the dashboard defintions 
   // we want to get the plugin type
@@ -114,6 +116,8 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   //     },
   //   },
   // },
+
+  // const queryDefinitions = definitions;
   const queryDefinitions = definitions.map((definition) => {
     const type = getQueryType(definition.kind);
     return {
@@ -123,8 +127,8 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
       },
     };
   });
+  console.log('JZ /dashboard-defintion DataQueriesProvider > queryDefintions', queryDefinitions);
 
-  // TODO: JZ -- for testing, inject a tracing defintion and adding tracing plugin
   
 
   // Filter definitions for time series query and other future query plugins
@@ -132,35 +136,36 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
     (definition) => definition.kind === 'TimeSeriesQuery'
   ) as TimeSeriesQueryDefinition[];
 
+  console.log('JZ /dashboard-defintion DataQueriesProvider > timeSeriesQueries : ', timeSeriesQueries)
+
   const timeSeriesResults = useTimeSeriesQueries(timeSeriesQueries, options, queryOptions);
 
-  // console.log("JZ TimeSeriesQueries : ", JSON.stringify(timeSeriesQueries));
+  console.log("JZ TimeSeriesQueries : ", JSON.stringify(timeSeriesQueries));
   // //     JZ TimeSeriesQueries :  [{"kind":"TimeSeriesQuery","spec":{"plugin":{"kind":"PrometheusTimeSeriesQuery","spec":{"query":"up"}}}}]
-  // console.log("JZ timeSeriesResults : ", timeSeriesResults);
+  console.log("JZ timeSeriesResults : ", timeSeriesResults);
   // //     JZ TimeSeriesQueries :  [ { data: { timeRange: [Object], stepMs: 24379, series: [Array] } } ]
 
   // JZ NOTES -- filter for TraceQueries and fetch TemoData from traceQueries
-  // const traceQueries = queryDefinitions.filter(
-  //   (definition) => definition.kind === 'TraceQuery'
-  // ) as TraceQueryDefinition[];
+  const traceQueries = queryDefinitions.filter(
+    (definition) => definition.kind === 'TraceQuery'
+  ) as TraceQueryDefinition[];
+  console.log('JZ /dashboard-defintion DataQueriesProvider > traceQueries: ', traceQueries);
 
   // JZ NOTES: TODO: Mocked Trace Query -- need to add to dashboard Defintiion
-  type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
-  const traceQueries =   [{
-      kind: "TraceQuery",
-      spec: {
-          plugin: {
-              kind: "TempoTraceQuery",
-              spec: {
-                  query: "{}"
-              }
-          }
-      }
-  }] as TraceQueryDefinition[];
+  // type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
+  // const traceQueries =   [{
+  //     kind: "TraceQuery",
+  //     spec: {
+  //         plugin: {
+  //             kind: "TempoTraceQuery",
+  //             spec: {
+  //                 query: "{duration>800ms}"
+  //             }
+  //         }
+  //     }
+  // }] as TraceQueryDefinition[];
 
-  // TODO: implement useTraceQueries
-  const traceResults = useTraceQueries(traceQueries);
-
+  const traceResults = [useTraceQueries(traceQueries)];
   console.log("JZ /traceResults: ", traceResults);
 
 
@@ -185,13 +190,13 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
 
   const refetchAll = useCallback(() => {
     timeSeriesResults.forEach((result) => result.refetch());
-    traceResults;
-  }, [timeSeriesResults]);
+    traceResults.forEach((result) => result.refetch());;
+  }, [timeSeriesResults, traceResults]);
 
   const ctx = useMemo(() => {
     const mergedQueryResults = [
       ...transformQueryResults(timeSeriesResults, timeSeriesQueries), 
-      //...transformQueryResults(traceResults, traceQueries),
+      ...transformQueryResults(traceResults, traceQueries),
     ];
     console.log("JZ mergeQueryResults : ", jsonPrint(mergedQueryResults))
     //   JZ mergeQueryResults :  [

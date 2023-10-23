@@ -1,0 +1,134 @@
+{
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "TestTempo",
+    "created_at": "2023-10-17T14:14:02.591392Z",
+    "updated_at": "2023-10-19T16:21:43.312643Z",
+    "version": 2,
+    "project": "IncredibleProject"
+  },
+  "spec": {
+    "display": {
+      "name": "TestTempo"
+    },
+    "panels": {
+      "markdownEx": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Markdown Example Zero",
+            "description": "This is a markdown panel"
+          },
+          "plugin": {
+            "kind": "Markdown",
+            "spec": {
+              "text": "## Example"
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "up"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "statSm": {
+        "kind": "Panel",
+        "spec": {
+          "display": { "name": "Stat Sm" },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "mean",
+              "unit": {
+                "kind": "Decimal",
+                "decimal_places": 1,
+                "abbreviate": true
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "node_time_seconds{job='$job',instance=~'$instance'} - node_boot_time_seconds{job='$job',instance=~'$instance'}"
+                  }
+                }
+              }
+            },
+            {
+                "kind": "TraceQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "TempoTraceQuery",
+                    "spec": {
+                      "query": "{duration>1100ms}"
+                    }
+                  }
+                }
+              }
+          ]
+        }
+      }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "Row 1",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/markdownEx"
+              }
+            },
+            {
+                "x": 6,
+                "y": 0,
+                "width": 6,
+                "height": 4,
+                "content": {
+                  "$ref": "#/spec/panels/statSm"
+                }
+              }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "Row 2",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": []
+        }
+      }
+    ],
+    "variables": [],
+    "duration": "1h",
+    "refreshInterval": "0s"
+  }
+}

@@ -61,7 +61,7 @@ export function PluginRegistry(props: PluginRegistryProps) {
   });
 
   const getPlugin = useCallback(
-    async <T extends PluginType>(pluginType: T, kind: string): Promise<PluginImplementation<T>> => {
+    async <T extends PluginType>(pluginType: T, kind: string): Promise<PluginImplementation<T>> => {    
       // Get the indexes of the installed plugins
       const pluginIndexes = await getPluginIndexes();
 

@@ -59,7 +59,7 @@ const EditJsonDialogForm = () => {
         </FormControl>
       </Dialog.Content>
       <Dialog.Actions>
-        <Dialog.PrimaryButton onClick={handleApply}>Apply</Dialog.PrimaryButton>
+        <Dialog.PrimaryButton onClick={handleApply}>Preview Changes</Dialog.PrimaryButton>
       </Dialog.Actions>
     </Dialog.Form>
   );

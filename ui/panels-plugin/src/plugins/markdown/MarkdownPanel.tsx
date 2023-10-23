@@ -18,6 +18,7 @@ import { Box, Theme } from '@mui/material';
 import { PanelProps, useReplaceVariablesInString } from '@perses-dev/plugin-system';
 import { PersesChartsTheme, useChartsTheme } from '@perses-dev/components';
 import { MarkdownPanelOptions } from './markdown-panel-model';
+import { useDataQueries } from '@perses-dev/plugin-system';
 
 export type MarkdownPanelProps = PanelProps<MarkdownPanelOptions>;
 
@@ -81,9 +82,14 @@ export function MarkdownPanel(props: MarkdownPanelProps) {
   } = props;
   const chartsTheme = useChartsTheme();
 
-  const textAfterVariableReplacement = useReplaceVariablesInString(text);
+  // JZ TODO: REMOVE THIS HACK -- it displays TraceQuery responses 
+  const { queryResults: traceResults, isLoading: traceIsLoading, isFetching: traceIsFetching } = useDataQueries('TraceQuery');
+  console.log('JZ /dashboard-defintion MarkDownPanel > traceResults : ', traceResults)
+  const traceStr = JSON.stringify(traceResults, null, 3)
 
-  const html = useMemo(() => markdownToHTML(textAfterVariableReplacement ?? ''), [textAfterVariableReplacement]);
+  const textAfterVariableReplacement = useReplaceVariablesInString(traceStr);
+
+  const html = useMemo(() => markdownToHTML(textAfterVariableReplacement ?? ''), [textAfterVariableReplacement, traceResults]);
   const sanitizedHTML = useMemo(() => sanitizeHTML(html), [html]);
 
   return (

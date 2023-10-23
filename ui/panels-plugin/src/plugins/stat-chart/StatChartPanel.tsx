@@ -32,6 +32,10 @@ export function StatChartPanel(props: StatChartPanelProps) {
   } = props;
 
   const { queryResults, isLoading, isFetching } = useDataQueries('TimeSeriesQuery');
+  const { queryResults: traceResults, isLoading: traceIsLoading, isFetching: traceIsFetching } = useDataQueries('TraceQuery');
+
+  console.log('JZ /dashboard-defintion StateChartPanel > traceResults : ', traceResults)
+
   const statChartData = useStatChartData(queryResults, calculation);
   const isMultiSeries = statChartData.length > 1;
 

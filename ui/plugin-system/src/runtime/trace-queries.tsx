@@ -4,6 +4,7 @@ import { useDatasourceStore } from "./datasources";
 import { useQuery } from "@tanstack/react-query";
 import { UseQueryResult } from "@tanstack/react-query";
 import { usePluginRegistry } from "./plugin-registry";
+import { TraceData } from "@perses-dev/core";
 
 export type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
 export const TRACE_QUERY_KEY = 'TraceQuery';
@@ -43,20 +44,17 @@ export const DEFAULT_TEMPO: TempoDatasourceSelector = {
  * Run a trace query using a plugin and return the results 
  * @param definition: dashboard defintion for a trace query
  */
-export async function useTraceQueries (
+export function useTraceQueries (
     definitions: TraceQueryDefinition[],
 ) {
 
-    if (!definitions){
-        return;
-    }
 
     // JZ NOTES: test only one defintion for now 
     const definition = definitions[0] as TraceQueryDefinition;
     console.log('JZ traceImpl Definition : ', definition)
 
    // Get Trace Plugin 
-    const { data: plugin } = usePlugin(TRACE_QUERY_KEY, definition.spec.plugin.kind);
+    const { data: plugin } = usePlugin(TRACE_QUERY_KEY, definition?.spec.plugin.kind);
     console.log("JZ traceImpl useTraceQueryImpl: plugin " , plugin)
     // const { data: datasourcePlugin } = usePlugin('Datasource', 'TempoDatasource');
     // console.log("JZ traceImpl useTraceQueryImpl: datasourcePlugin " , datasourcePlugin)
@@ -103,16 +101,34 @@ export async function useTraceQueries (
 
     // Using the Tracing Plugin get a callback function to get the trace data
     const { getPlugin } = usePluginRegistry();
-    const queryFn2 = async ()=>{
-            const plugin = await getPlugin(TRACE_QUERY_KEY, definition.spec.plugin.kind);
-            const data = await plugin.getTraceData(definition.spec.plugin.spec, ctx);
-            console.log('JZ traceImpl queryFn > data' , data);
-    }
+    // const queryFn2 = async ()=>{
+    //         const plugin = await getPlugin(TRACE_QUERY_KEY, definition.spec.plugin.kind);
+    //         const data = await plugin.getTraceData(definition.spec.plugin.spec, ctx);
+    //         // console.log('JZ traceImpl queryFn > data' , data);
+    //         return data;
+    // }
+
 
     // useQuery() handles fetching and caching of data 
     return useQuery({
         queryKey: queryKey, 
-        queryFn: queryFn2,
+        queryFn: async () => {
+            const emptyTraceData:TraceData =  { traces: [] }
+            const traceQueryKind = definition?.spec?.plugin?.kind; 
+            console.log('JZ traceQueryKind : ', traceQueryKind);
+            if (traceQueryKind === undefined){
+                console.log('JZ traceQueryKind === undefined is true')
+                return  emptyTraceData;
+            }
+
+
+            const plugin = await getPlugin(TRACE_QUERY_KEY, traceQueryKind);
+            if (plugin === undefined) {
+                throw new Error('Expected plugin to be loaded');
+            }
+            const data = await plugin.getTraceData(definition.spec.plugin.spec, ctx);
+            return data;
+        }
     }) 
 }
 
