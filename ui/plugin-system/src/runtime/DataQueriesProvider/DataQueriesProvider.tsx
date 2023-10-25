@@ -165,7 +165,9 @@ export function DataQueriesProvider(props: DataQueriesProviderProps) {
   //     }
   // }] as TraceQueryDefinition[];
 
-  const traceResults = [useTraceQueries(traceQueries)];
+  // JZ TODO: useTraceQueries returns useQuery() which is a hook, the hook can't be wrapped in an array 
+  // the array will immediately return and will not 'await' that's why we're getting an undefined error 
+  const traceResults = useTraceQueries(traceQueries);
   console.log("JZ /traceResults: ", traceResults);
 
 

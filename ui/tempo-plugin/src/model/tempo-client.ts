@@ -53,7 +53,7 @@ export function searchTraces(query: string, datasourceUrl:string):Promise<TraceD
     // return await executeRequest(`/api/search?${new URLSearchParams({ q })}`);
     // console.log('JZ /proxy fetchWithGet', fetchWithGet(`/api/search?${query}`, datasourceUrl));
     // return await executeRequest(`tempo/api/search?=${query}`);
-    return fetchWithGet<TraceData>(`/api/search?${query}`, datasourceUrl)
+    return fetchWithGet<TraceData>(`/api/search?q=${query}`, datasourceUrl)
 };
 
 export function queryTrace (traceID: string, datasourceUrl: string) {
