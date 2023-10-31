@@ -1,0 +1,7 @@
+{
+    "kind": "TempoDatasource",
+    "spec": {
+      "direct_url": "http://localhost:3200"
+    }
+  }
+  
