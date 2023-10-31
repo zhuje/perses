@@ -87,7 +87,7 @@ export const SaveDashboardButton = ({ onSave, isDisabled, variant = 'contained' 
   };
 
   return (
-    <Button variant={variant} onClick={onSaveButtonClick} disabled={isDisabled || isSavingDashboard}>
+    <Button color='success' variant={variant} onClick={onSaveButtonClick} disabled={isDisabled || isSavingDashboard}>
       Save
     </Button>
   );
