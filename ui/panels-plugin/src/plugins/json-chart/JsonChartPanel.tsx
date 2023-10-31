@@ -11,9 +11,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './plugins/time-series-chart';
-export * from './plugins/gauge-chart';
-export * from './plugins/stat-chart';
-export * from './plugins/markdown';
-export * from './plugins/bar-chart';
-export * from './plugins/json-chart'
+import { useDataQueries } from "@perses-dev/plugin-system";
+import { Box } from '@mui/material';
+
+
+export function JsonChartPanel(){
+  const { queryResults: traceResults } = useDataQueries('TraceQuery');
+  const traceStr = JSON.stringify(traceResults, null, 3)
+
+  return (
+    <Box
+        sx={{
+        mb: 2,
+        display: "flex",
+        flexDirection: "column",
+        height: 700,
+        overflow: "hidden",
+        overflowY: "scroll",
+        }}
+    >
+        <pre>{traceStr}</pre>
+    </Box>
+  )
+    
+}
