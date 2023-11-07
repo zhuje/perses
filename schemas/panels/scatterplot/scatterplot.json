@@ -1,0 +1,15 @@
+{
+  "kind": "ScatterChart",
+  "spec": {
+    "yAxis": {
+      "show": true,
+      "label": "Duration",
+      "min": 0.2,
+      "max": 0.4,
+      "format": {
+        "unit": "decimal",
+        "decimalPlaces": 2
+      }
+    }
+  }
+}
