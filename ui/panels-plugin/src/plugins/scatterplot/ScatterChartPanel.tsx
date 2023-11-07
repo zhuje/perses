@@ -107,39 +107,45 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     return miliseconds
   }
 
-  let yAxisMax = 0;
   const scatterTraceData = useMemo(() => {
     const traceData = traceResults[0].data
     if (traceData === undefined) {
       return [];
     }
 
+    // Apache eCharts Docs for scatter chart options: https://echarts.apache.org/en/option.html#series-scatter
     const seriesData: ScatterSeriesOption[] = [];
     const traceDurations = []
     for (let trace of traceData.traces) {
         const startTime = convertNanoToMiliseconds(trace.startTimeUnixNano)
         const duration =  trace.durationMs
-        if (duration > yAxisMax){
-          yAxisMax = duration;
-        }
-        traceDurations.push([startTime, duration])
+        const serviceName = trace.rootServiceName
+        const traceName = trace.rootTraceName
+
+
+        traceDurations.push([startTime, duration, serviceName, traceName ])
     }
 
     console.log('JZ /pie traceDurations[] ', traceDurations)
 
-    let traceDurationData = [['timestamp', 'value'], ...traceDurations];
+    let traceDurationData = [['timestamp', 'value', 'rootServiceName', 'rootTraceName'], ...traceDurations];
+
     const scatterSeries: ScatterSeriesOption = {
       type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
-      name: "test",
+      name: 'test',
       data: traceDurationData,
       symbolSize: 20,
+
+      // TODO: symbolizeSize based on number of spans >> replace data[2] means  traceData[ColumnWithNumSpans]
+      // symbolSize: function(data) {
+      //   return Math.sqrt(data[2]) / 5e2;
+      // },
     };
     seriesData.push(scatterSeries);
     console.log('JZ /pie traceSeriesData , ', seriesData)
     return seriesData;
   }, [traceIsLoading]);
 
-  console.log('JZ /max ', yAxisMax)
 
   // console.log('JZ scatterData : ', JSON.stringify(scatterData, null, 2));
 
@@ -162,6 +168,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     );
   }
   return (
-    <Scatterplot width={contentDimensions.width} height={contentDimensions.height} data={scatterTraceData} yAxisMax={yAxisMax}/>
+    <Scatterplot width={contentDimensions.width} height={contentDimensions.height} data={scatterTraceData}/>
   );
 }

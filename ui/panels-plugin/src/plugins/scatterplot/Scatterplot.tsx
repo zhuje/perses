@@ -12,11 +12,10 @@ interface ScatterplotProps {
   height: number;
   data: ScatterSeriesOption[];
   xAxis?: EChartsCoreOption['xAxis'];
-  yAxisMax: number;
 }
 
 export function Scatterplot(props: ScatterplotProps) {
-  const { width, height, data, xAxis, yAxisMax } = props;
+  const { width, height, data, xAxis } = props;
   const chartsTheme = useChartsTheme();
 
   const mockData =  [
@@ -38,10 +37,6 @@ export function Scatterplot(props: ScatterplotProps) {
       type: 'scatter',
     }
   ]
-
-  console.log(
-    'JZ /max from Scatterplot, ', yAxisMax
-  )
 
   const option: EChartsCoreOption = useMemo(() => {
     if (!data) return chartsTheme.noDataOption;
@@ -67,6 +62,18 @@ export function Scatterplot(props: ScatterplotProps) {
       animation: false,
       tooltip: {
         show: true,
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        },
+        formatter: function (param) {
+          param = param[0];
+          return [
+            'Duration (miliseconds): ' + param.data[1]+ '<hr size=1 style="margin: 3px 0">',
+            'rooServiceName: ' + param.data[2] + '<br/>',
+            'rootTraceName: ' + param.data[3] + '<br/>'
+          ].join('');
+        }
       },
       legend: {
         show: true,
