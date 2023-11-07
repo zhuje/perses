@@ -44,10 +44,12 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
 
 
   // ScatterPlot Todos 
-  // 1. visiualize duration vs time (unix convert to current local time)
-  // 2. Bubble size corresponds to number of spans 
+  // 1. visiualize duration vs time (unix convert to current local time, see TimeSeriesPanel)
+  // 2. Bubble size corresponds to number of spans (need to loop over all traces...)
   // 3. Errors appear as red bubbles 
+      // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
   
+      
   // JZ Question how are we going to call a the DataQueriesProvider to get our query if we 
   // don't know what QueryType it is (e.g. TraceQuery or TimeSeriesQuery). 
   // Would there ever be an instance were there is a a panel that has BOTH 
@@ -121,8 +123,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
         const duration =  trace.durationMs
         const serviceName = trace.rootServiceName
         const traceName = trace.rootTraceName
-
-
         traceDurations.push([startTime, duration, serviceName, traceName ])
     }
 
