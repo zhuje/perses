@@ -1,48 +1,33 @@
-import { DatasourceSpec, TraceData } from '@perses-dev/core';
+// Copyright 2023 The Perses Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-jest.mock('echarts/core');
-
+import { DatasourceSpec } from '@perses-dev/core';
 import { TraceQueryContext } from '@perses-dev/plugin-system';
+import { MOCK_ENRICHED_TRACE_QUERY_RESPONSE, MOCK_TRACE_DATA } from '../test';
 import { TempoDatasourceSpec } from './tempo-datasource-types';
 import { TempoDatasource } from './tempo-datasource';
 import { TempoTraceQuery } from './TempoTraceQuery';
 
+jest.mock('echarts/core');
+
 const datasource: TempoDatasourceSpec = {
-  direct_url: '/test',
+  directUrl: '/test',
 };
 
 const tempoStubClient = TempoDatasource.createClient(datasource, {});
 
-const MOCK_TRACE_DATA: TraceData = {
-  traces: [
-    {
-      traceID: '0123456',
-      rootServiceName: 'fooService',
-      rootTraceName: 'fooTrace',
-      startTimeUnixNano: '7890',
-      durationMs: 1000,
-      spanSets: {
-        matched: 1,
-        spans: [
-          {
-            spandID: '2345',
-            startTimeUnixNano: '7891',
-            durationNanos: '800',
-            attributes: {
-              key: 'fooSpanKey',
-              value: {
-                stringValue: 'fooStringvalue',
-              },
-            },
-          },
-        ],
-      },
-    },
-  ],
-};
-
-tempoStubClient.searchTraces = jest.fn(async () => {
-  const stubResponse: TraceData = MOCK_TRACE_DATA;
+tempoStubClient.getEnrichedTraceQuery = jest.fn(async () => {
+  const stubResponse = MOCK_ENRICHED_TRACE_QUERY_RESPONSE;
   return stubResponse;
 });
 
@@ -69,7 +54,7 @@ const stubTempoContext: TraceQueryContext = {
 };
 
 describe('TempoTraceQuery', () => {
-  it('should return trace results', async () => {
+  it('should return trace query results', async () => {
     const results = await TempoTraceQuery.getTraceData(
       {
         query: 'duration > 900ms',

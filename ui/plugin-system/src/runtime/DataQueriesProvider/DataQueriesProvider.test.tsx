@@ -69,12 +69,12 @@ describe('useDataQueries', () => {
     expect(result.current.queryResults[0]?.data).toEqual(MOCK_TIME_SERIES_DATA);
   });
 
-  it('should return the correct data TraceQuery', () => {
+  it('should return the correct data for TraceQuery', () => {
     const definitions = [
       {
         kind: 'TempoTraceQuery',
         spec: {
-          query: 'up',
+          query: '{ duration > 1000ms }',
         },
       },
     ];

@@ -11,22 +11,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model
-
-import (
-	"github.com/perses/perses/schemas/common"
-	commonProxy "github.com/perses/perses/schemas/common/proxy"
-)
-
-kind: "TempoDatasource"
-spec: {
-	#directUrl | #proxy
-}
-
-#directUrl: {
-	directUrl: common.#url
-}
-
-#proxy: {
-	proxy: commonProxy.#HTTPProxy
-}
+export * from './mock-data';
