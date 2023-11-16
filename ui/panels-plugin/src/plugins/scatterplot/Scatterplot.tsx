@@ -24,7 +24,7 @@ export function Scatterplot(props: ScatterplotProps) {
         {
           "name": {
           "rootServiceName": "brie", 
-          "rootTraceName": "stinky"
+          "rootTraceName": "cheese"
         }, 
           "value": [5,5], 
         },
