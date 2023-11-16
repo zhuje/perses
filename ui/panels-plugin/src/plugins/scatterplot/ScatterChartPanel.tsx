@@ -59,8 +59,7 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
   const { queryResults: timeSeriesResults } = useDataQueries('TimeSeriesQuery');
 
   console.log('JZ /apple traceResults: ', traceResults)
-  console.log('JZ /apple traceResults[0].data: ', traceResults[0].data)
-  console.log('JZ /apple traceResults.data: ', traceResults.data)
+  console.log('JZ /apple traceResults[0].data: ', traceResults[0]?.data)
   console.log('JZ /apple timeSeriesResults: ', timeSeriesResults)
   // console.log('JZ /apple from useTimeSeriesQuery >  data: ', JSON.stringify(data, null, 2) )
 
@@ -110,7 +109,7 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
   }
 
   const scatterTraceData = useMemo(() => {
-    const traceData = traceResults[0].data
+    const traceData = traceResults[0]?.data
     if (traceData === undefined) {
       return [];
     }
@@ -119,26 +118,44 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     const seriesData: ScatterSeriesOption[] = [];
     const traceDurations = []
     for (let trace of traceData.traces) {
-        const startTime = convertNanoToMiliseconds(trace.startTimeUnixNano)
+        const startTimeUnixMs = trace.startTimeUnixMs
         const duration =  trace.durationMs
-        const serviceName = trace.rootServiceName
-        const traceName = trace.rootTraceName
-        traceDurations.push([startTime, duration, serviceName, traceName ])
+        const spanCount = trace.spanCount
+        const errorCount = trace.errorCount
+        const name = trace.name
+        let color = 'default'
+        if (errorCount !== undefined && errorCount > 0 ){
+          color = 'red'
+        }
+        traceDurations.push([startTimeUnixMs, duration, spanCount, errorCount, name, color ])
     }
 
     console.log('JZ /pie traceDurations[] ', traceDurations)
 
-    let traceDurationData = [['timestamp', 'value', 'rootServiceName', 'rootTraceName'], ...traceDurations];
+    let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name', 'color'], ...traceDurations];
 
     const scatterSeries: ScatterSeriesOption = {
       type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
       name: 'test',
       data: traceDurationData,
-      symbolSize: 20,
+      // symbolSize: 20,
 
       // TODO: symbolizeSize based on number of spans >> replace data[2] means  traceData[ColumnWithNumSpans]
-      // symbolSize: function(data) {
-      //   return Math.sqrt(data[2]) / 5e2;
+      symbolSize: function(data) {
+        console.log('JZ data, data[5]', data, data[2], Math.sqrt(data[2]) / 5e2)
+        return data[2] * 7;
+      },
+
+      // TODO: color Errors items RED 
+      // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
+      // itemStyle: {
+      //   color: function(param) {
+      //     // Write your logic.
+      //     // for example: in case your data is structured as an array of arrays, you can paint it red if the first value is lower than 10:
+      //     if (param.data[] < 10) return 'red'
+      //     // Or if data is structured as an array of values:
+      //     if (param[0] < 10) return 'red'
+      //   }
       // },
     };
     seriesData.push(scatterSeries);
