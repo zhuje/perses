@@ -22,5 +22,5 @@ spec: close({
 	datasource?: {
 		kind: tempo.kind
 	}
-	query:               string
+	query: string
 })

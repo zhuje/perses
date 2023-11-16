@@ -3,7 +3,6 @@
   "description": "Monorepo for the Perses UI",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3200/",
   "scripts": {
     "build": "turbo run build",
     "test": "turbo run test",
@@ -26,17 +25,7 @@
     "typedoc": "typedoc"
   },
   "workspaces": [
-    "app",
-    "components",
-    "core",
-    "dashboards",
-    "e2e",
-    "internal-utils",
-    "panels-plugin",
-    "plugin-system",
-    "prometheus-plugin",
-    "tempo-plugin",
-    "storybook"
+    "*"
   ],
   "devDependencies": {
     "@swc/cli": "^0.1.62",

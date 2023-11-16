@@ -17,6 +17,7 @@ export * from './datasource';
 export * from './definitions';
 export * from './display';
 export * from './http';
+export * from './http-proxy';
 export * from './layout';
 export * from './legend';
 export * from './notice';
