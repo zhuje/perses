@@ -14,7 +14,7 @@
 import { DatasourceSpec } from '@perses-dev/core';
 import { TraceQueryContext } from '@perses-dev/plugin-system';
 import { MOCK_ENRICHED_TRACE_QUERY_RESPONSE, MOCK_TRACE_DATA } from '../test';
-import { TempoDatasourceSpec } from './tempo-datasource-types';
+import { TempoDatasourceSpec } from './types';
 import { TempoDatasource } from './tempo-datasource';
 import { TempoTraceQuery } from './TempoTraceQuery';
 
