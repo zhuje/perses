@@ -55,7 +55,7 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
   // Would there ever be an instance were there is a a panel that has BOTH 
   // a TraceQuery and TimeSeriesQuery. Isn't it mutally exclusive -- you either have 
   // TraceQuery OR a TimeSeriesQuery?
-  const { queryResults: traceResults, isLoading: traceIsLoading, error } = useDataQueries('TraceQuery');
+  const { queryResults: traceResults, isLoading: traceIsLoading } = useDataQueries('TraceQuery');
   const { queryResults: timeSeriesResults } = useDataQueries('TimeSeriesQuery');
 
   console.log('JZ /apple traceResults: ', traceResults)
@@ -125,8 +125,10 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     const seriesData: ScatterSeriesOption[] = [];
     const traceDurations = []
     for (let trace of traceData.traces) {
-        const startTimeUnixMs = new Date(trace.startTimeUnixMs)
+        let startTimeUnixMs = new Date();
+        startTimeUnixMs = new Date(trace.startTimeUnixMs)
         console.log('JZ /cheesecake : startTimeUnixMs ', trace.startTimeUnixMs, startTimeUnixMs)
+        
         const duration =  trace.durationMs
         const spanCount = trace.spanCount
         const errorCount = trace.errorCount
@@ -142,8 +144,11 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
 
     console.log('JZ /pie traceDurations[] ', traceDurations)
 
-    // let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name', 'color'], ...traceDurations];
-    let traceDurationData = [['startTimeUnixMs', 'duration'], ...traceDurations];
+    let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name', 'color'], ...traceDurations];
+    // let traceDurationData = [['startTimeUnixMs', 'duration'], ...traceDurations];
+
+    console.log('JZ /pie traceDurations[] ', traceDurationData)
+
 
 
     const scatterSeries: ScatterSeriesOption = {
@@ -154,7 +159,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
 
       // TODO: symbolizeSize based on number of spans >> replace data[2] means  traceData[ColumnWithNumSpans]
       symbolSize: function(data) {
-        console.log('JZ data, data[5]', data, data[2], Math.sqrt(data[2]) / 5e2)
         return data[2] * 7;
       },
 
@@ -180,8 +184,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
 
   console.log('JZ scatterTraceData : ', JSON.stringify(scatterTraceData, null, 2));
 
-
-  if (error) throw error;
 
   if (contentDimensions === undefined) return null;
 

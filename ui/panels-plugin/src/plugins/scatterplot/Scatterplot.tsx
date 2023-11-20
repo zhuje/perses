@@ -1,3 +1,6 @@
+// @ts-ignore
+// TODO: remove this laster
+
 import React, { useMemo } from 'react';
 import { EChart, useChartsTheme,  } from '@perses-dev/components';
 import { use, EChartsCoreOption } from 'echarts/core';
@@ -70,7 +73,8 @@ export function Scatterplot(props: ScatterplotProps) {
         axisPointer: {
           type: 'cross'
         },
-        formatter: function (param) {
+        formatter: function(param:any) {
+          console.log('JZ /bread : ', param)
           param = param[0];
           return [
             'startTimeUnixMs: ' + param.data[0] + '<br/>',
@@ -78,7 +82,7 @@ export function Scatterplot(props: ScatterplotProps) {
             'spanCount: ' + param.data[2] + '<br/>',
             'errorCount: ' + param.data[3] + '<br/>',
             'name: ' + param.data[4] + '<br/>',
-            'color: ' + param.data['color'] + '<br/>'
+            'color: ' + param.data[5] + '<br/>'
           ].join('');
         }
       },
