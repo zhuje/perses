@@ -90,6 +90,13 @@ export async function getEnrichedTraceQuery(query: string, datasourceUrl: string
           }
         }
 
+        console.log('JZ /getEnrichedTraceQuery: ', {
+          summary: trace,
+          traceDetails: searchTraceIDResponse,
+          spanCount,
+          errorCount,
+        })
+
         return {
           summary: trace,
           traceDetails: searchTraceIDResponse,

@@ -108,6 +108,13 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     return miliseconds
   }
 
+  function convertUnixMsToLocalTime(TimeUnixMs: number){
+    var date = new Date(TimeUnixMs);
+    const time = date.toLocaleTimeString("it-IT")
+    console.log(time);
+    return time
+  }
+
   const scatterTraceData = useMemo(() => {
     const traceData = traceResults[0]?.data
     if (traceData === undefined) {
@@ -118,7 +125,8 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     const seriesData: ScatterSeriesOption[] = [];
     const traceDurations = []
     for (let trace of traceData.traces) {
-        const startTimeUnixMs = trace.startTimeUnixMs
+        const startTimeUnixMs = new Date(trace.startTimeUnixMs)
+        console.log('JZ /cheesecake : startTimeUnixMs ', trace.startTimeUnixMs, startTimeUnixMs)
         const duration =  trace.durationMs
         const spanCount = trace.spanCount
         const errorCount = trace.errorCount
@@ -128,11 +136,15 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
           color = 'red'
         }
         traceDurations.push([startTimeUnixMs, duration, spanCount, errorCount, name, color ])
+        //traceDurations.push([startTimeUnixMs, duration ])
+
     }
 
     console.log('JZ /pie traceDurations[] ', traceDurations)
 
-    let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name', 'color'], ...traceDurations];
+    // let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name', 'color'], ...traceDurations];
+    let traceDurationData = [['startTimeUnixMs', 'duration'], ...traceDurations];
+
 
     const scatterSeries: ScatterSeriesOption = {
       type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type

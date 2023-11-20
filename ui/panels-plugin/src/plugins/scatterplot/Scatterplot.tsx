@@ -20,20 +20,22 @@ export function Scatterplot(props: ScatterplotProps) {
   const { width, height, data, xAxis } = props;
   const chartsTheme = useChartsTheme();
 
+  console.log('JZ Scatterplot Data , ', data)
+
   const mockData =  [
     {
       data: [
         {
           "name": {
-          "rootServiceName": "brie", 
-          "rootTraceName": "cheese"
-        }, 
-          "value": [5,5], 
+            "rootServiceName": "brie", 
+            "rootTraceName": "cheese"
+          }, 
+          "value": ["05:00:00",5], 
         },
-        [1,2,5],
-        [2,2,'two'],
-        [3,3,'three'],
-        [4,4,'four'],
+        ["01:00:00",1,5],
+        ["02:00:00",2,'two'],
+        ["03:00:00",3,'three'],
+        ["04:00:00",4,'four'],
         
       ], 
       type: 'scatter',
@@ -52,7 +54,7 @@ export function Scatterplot(props: ScatterplotProps) {
       },
       xAxis: {
         type: 'time',
-        name: 'UTC Time'
+        name: 'Local Time',
         // data: [1, 2, 3, 4]
         // TODO: customize axisLabel using https://echarts.apache.org/en/option.html#xAxis.axisLabel.formatter
       },
@@ -80,6 +82,17 @@ export function Scatterplot(props: ScatterplotProps) {
           ].join('');
         }
       },
+      dataZoom: [
+        {
+          type: 'inside',
+          start: 0,
+          end: 20
+        },
+        {
+          start: 0,
+          end: 20
+        }
+      ],
       itemStyle: {
         shadowBlur: 10,
         shadowColor: 'rgba(120, 36, 50, 0.5)',

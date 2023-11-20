@@ -41,7 +41,7 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
   const enrichedTraceResponse = await client.getEnrichedTraceQuery(spec.query, datasourceUrl);
 
   const traces: TraceValue[] = enrichedTraceResponse.traces.map((traceValue) => {
-    const startTimeUnixMs = parseInt(traceValue.summary.startTimeUnixNano) / 1000;
+    const startTimeUnixMs = parseInt(traceValue.summary.startTimeUnixNano) * 1e-6 // convert to millisecond for eChart time format
     const durationMs = traceValue.summary.durationMs;
     const spanCount = traceValue.spanCount;
     const errorCount = traceValue.errorCount;
