@@ -150,17 +150,33 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     console.log('JZ /pie traceDurations[] ', traceDurationData)
 
 
+    const mockData = [
+      {
+        value: [0,120],
+        itemStyle: {color: 'red'},
+      },
+      {
+          value: [1,200],
+          itemStyle: {color: 'yellow'},
+      },
+      {
+          value: [2,150],
+          itemStyle: {color: 'purple'},
+      }
+
+    ]
+
 
     const scatterSeries: ScatterSeriesOption = {
       type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
       name: 'test',
-      data: traceDurationData,
+      data: mockData,
       // symbolSize: 20,
 
       // TODO: symbolizeSize based on number of spans >> replace data[2] means  traceData[ColumnWithNumSpans]
-      symbolSize: function(data) {
-        return data[2] * 7;
-      },
+      // symbolSize: function(data) {
+      //   return data[2] * 7;
+      // },
 
       // TODO: color Errors items RED 
       // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
