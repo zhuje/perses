@@ -68,23 +68,23 @@ export function Scatterplot(props: ScatterplotProps) {
       },
       animation: false,
       tooltip: {
-        show: true,
+        // show: true,
         trigger: 'axis',
         axisPointer: {
           type: 'cross'
         },
-        formatter: function(param:any) {
-          console.log('JZ /bread : ', param)
-          param = param[0];
-          return [
-            'startTimeUnixMs: ' + param.data[0] + '<br/>',
-            'Duration (miliseconds): ' + param.data[1] + '<hr size=1 style="margin: 3px 0">',
-            'spanCount: ' + param.data[2] + '<br/>',
-            'errorCount: ' + param.data[3] + '<br/>',
-            'name: ' + param.data[4] + '<br/>',
-            'color: ' + param.data[5] + '<br/>'
-          ].join('');
-        }
+        // formatter: function(param:any) {
+        //   console.log('JZ /bread : ', param)
+        //   param = param[0];
+        //   return [
+        //     'startTimeUnixMs: ' + param.data[0] + '<br/>',
+        //     'Duration (miliseconds): ' + param.data[1] + '<hr size=1 style="margin: 3px 0">',
+        //     'spanCount: ' + param.data[2] + '<br/>',
+        //     'errorCount: ' + param.data[3] + '<br/>',
+        //     'name: ' + param.data[4] + '<br/>',
+        //     'color: ' + param.data[5] + '<br/>'
+        //   ].join('');
+        // }
       },
       dataZoom: [
         {
@@ -97,12 +97,6 @@ export function Scatterplot(props: ScatterplotProps) {
           end: 20
         }
       ],
-      itemStyle: {
-        shadowBlur: 10,
-        shadowColor: 'rgba(120, 36, 50, 0.5)',
-        shadowOffsetY: 5,
-        color: 'red'
-      },
       legend: {
         show: true,
         type: 'scroll',
