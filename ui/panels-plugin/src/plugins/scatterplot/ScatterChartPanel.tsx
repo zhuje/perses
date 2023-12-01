@@ -5,9 +5,11 @@ import { useMemo } from 'react';
 import { ScatterChartOptions } from './scatter-chart-model';
 import { Scatterplot } from './Scatterplot';
 import { useSuggestedStepMs } from './utils';
-import { useDataQueries } from '@perses-dev/plugin-system';
 import { TimeSeriesQueryDefinition } from '@perses-dev/core';
 import { dataTool } from 'echarts';
+import { useDataQueries } from '@perses-dev/plugin-system';
+
+
 
 export type ScatterChartPanelProps = PanelProps<ScatterChartOptions>;
 
@@ -18,8 +20,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
   } = props;
   const suggestedStepMs = useSuggestedStepMs(contentDimensions?.width) * 10; // temp calc for demo
 
-
-  
 
 
   const query =  {
@@ -126,14 +126,14 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     const seriesData: ScatterSeriesOption[] = [];
     const traceDurations = []
     for (let trace of traceData.traces) {
-        // let startTimeUnixMs = new Date();
-        const startTimeUnixMs = new Date(trace.startTimeUnixMs)
+        let startTimeUnixMs = new Date();
+        startTimeUnixMs = new Date(trace.startTimeUnixMs)
         console.log('JZ /cheesecake : startTimeUnixMs ', trace.startTimeUnixMs, startTimeUnixMs)
         
-        const duration =  trace.durationMs
-        const spanCount = trace.spanCount
-        const errorCount = trace.errorCount
-        const name = trace.name
+        const duration =  trace?.durationMs!
+        const spanCount = trace?.spanCount!
+        const errorCount = trace?.errorCount!
+        const name = trace?.name!
         // let color = '#1473e6'
         let color = '';
         if (errorCount !== undefined && errorCount > 0 ){
@@ -142,49 +142,13 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
 
         const datapoint =  [startTimeUnixMs, duration, spanCount, errorCount, name]
           // ...((color === 'red') && {itemStyle: {color: 'red'}})
-        
-        // if (color === 'red') {
-        //   datapoint.itemStyle = {color: color}
-        // }
-
-        // traceDurations.push([startTimeUnixMs, duration, spanCount, errorCount, name, color ])
-        //traceDurations.push([startTimeUnixMs, duration ])
-        traceDurations.push(datapoint)
+     
+        traceDurations.push([startTimeUnixMs, duration, spanCount, errorCount, name])
     }
 
-    console.log('JZ /pie traceDurations[] ', traceDurations)
 
     let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name'], ...traceDurations];
-    // let traceDurationData = [['startTimeUnixMs', 'duration'], ...traceDurations];
 
-    console.log('JZ /pie traceDurations[] ', traceDurationData)
-
-
-    const mockData = [
-      {
-        value: [0,120],
-        itemStyle: {color: 'red'},
-      },
-      {
-          value: [1,200],
-          itemStyle: {color: 'yellow'},
-      },
-      {
-          value: [2,150],
-          itemStyle: {color: 'purple'},
-      }
-    ]
-    const mockData2 = 
-        {
-          dimensions: ['2015', '2016', '2017'],
-          source: [
-              { '2015': 43.3, '2016': 85.8, '2017': 93.7},
-              { '2015': 83.1, '2016': 73.4, '2017': 55.1},
-              { '2015': 86.4, '2016': 65.2, '2017': 82.5},
-              { '2015': 72.4, '2016': 53.9, '2017': 39.1}
-          ]
-      }
-    
 
     const scatterSeries:ScatterSeriesOption = {
       type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
@@ -194,7 +158,7 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
         y: 'duration',
         tooltip: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name']
       },
-      data: traceDurations,
+      data: traceDurationData,
       symbolSize: function(data) {
         const spanCount = data[2]
         const scaleSymbolSize = 7
@@ -202,13 +166,15 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
       },
       itemStyle: {
         color: function(params){ // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
-          if (params?.data[3] > 0) {
-            return 'red'
-          }
+          const dataValues = params?.data as Array<[Date, number,number, number]>
+          console.log("dataValues[3]", dataValues[3])
+          const errorCount =  dataValues[3]
+          // if (errorCount !== undefined && errorCount > 0) {
+          //   return 'red'
+          // }
           const defaultColor = "#56B4E9"
           const dataPointColor = (params.color !== undefined) ? params.color : defaultColor
           return dataPointColor
-          return 'red' 
         }
       }
     };
@@ -216,10 +182,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     console.log('JZ /pie traceSeriesData , ', seriesData)
     return seriesData;
   }, [traceIsLoading]);
-
-
-
-  // console.log('JZ scatterData : ', JSON.stringify(scatterData, null, 2));
 
   console.log('JZ scatterTraceData : ', JSON.stringify(scatterTraceData, null, 2));
 

@@ -45,10 +45,27 @@ export function Scatterplot(props: ScatterplotProps) {
     }
   ]
 
+  const dataset = {
+    source: [
+      ["startTimeUnixMs", "duration", "spanCount", "errorCount", "name"],
+      [new Date('December 17, 1995 03:24:00'), 1, 85.8, 93.7],
+      [new Date('December 18, 1995 03:24:00'), 2, 73.4, 55.1],
+      [new Date('December 19, 1995 03:24:00'), 3, 65.2, 82.5],
+      [new Date('December 20, 1995 03:24:00'), 4, 53.9, 39.1]
+    ]
+  }
+  const series =
+    [{
+      type: 'scatter'
+    }]
+  
+
   const option: EChartsCoreOption = useMemo(() => {
     if (!data) return chartsTheme.noDataOption;
     return {
       series: data, 
+      // dataset: dataset,
+      // series: series,
       grid: {
         bottom: 40,
         top: 50,
