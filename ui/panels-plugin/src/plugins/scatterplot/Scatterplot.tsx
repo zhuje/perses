@@ -145,8 +145,7 @@ export function Scatterplot(props: ScatterplotProps) {
 
 
   var options2:EChartsCoreOption = {
-    dataset: 
-      dataset,
+    dataset: dataset,
     series: [
       {
         type: 'scatter',
