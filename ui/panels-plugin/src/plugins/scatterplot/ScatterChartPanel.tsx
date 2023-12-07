@@ -31,13 +31,59 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
   const { queryResults: traceResults, isLoading: traceIsLoading } = useDataQueries('TraceQuery');
   const { queryResults: timeSeriesResults, isLoading: timeSeriesIsLoading } = useDataQueries('TimeSeriesQuery');
 
+
+  
+  const scatterTraceData2 = useMemo(() => {
+    const traceData = traceResults[0]?.data
+    if (traceData === undefined) {
+      return [];
+    }
+
+    console.log("/pineapple traceResults ", traceResults)
+
+    const source = traceData.traces.map((trace) => {
+      return {
+        ...trace,
+        startTimeUnixMs: new Date(trace.startTimeUnixMs)
+      }
+    })
+
+    const dataset = {
+      source: source
+    }
+
+    console.log("/pineapple dataset ", dataset)
+    return dataset 
+
+  }, [traceIsLoading]);
+
+
+
   const scatterTraceData = useMemo(() => {
     const traceData = traceResults[0]?.data
     if (traceData === undefined) {
       return [];
     }
 
+    console.log("/pineapple traceResults ", traceResults)
+
+    const source = traceData.traces.map((trace) => {
+      return {
+        ...trace,
+        startTimeUnixMs: new Date(trace.startTimeUnixMs)
+      }
+    })
+
+    const dataset = {
+      source: source
+    }
+
+    console.log("/pineapple dataset ", dataset)
+
+
+
     // Apache eCharts Docs for scatter chart options: https://echarts.apache.org/en/option.html#series-scatter
+    // Apache eCharts Docs for mapping data to charts: https://echarts.apache.org/handbook/en/concepts/dataset/#map-from-data-to-charts-(series.encode)
     const seriesData: ScatterSeriesOption[] = [];
     const traceDurations = []
     for (let trace of traceData.traces) {
@@ -62,43 +108,102 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
         traceDurations.push([startTimeUnixMs, duration, spanCount, errorCount, name])
     }
 
+        for (let trace of traceData.traces) {
 
+        console.log("trace: ", trace)
+
+        let startTimeUnixMs = new Date();
+        startTimeUnixMs = new Date(trace.startTimeUnixMs)        
+        const duration =  trace?.durationMs!
+        const spanCount = trace?.spanCount!
+        const errorCount = trace?.errorCount!
+        const name = trace?.name!
+        // let color = '#1473e6'
+        let color = '';
+        if (errorCount !== undefined && errorCount > 0 ){
+          color = 'red'
+        }
+
+        const datapoint =  [startTimeUnixMs, duration, spanCount, errorCount, name]
+          // ...((color === 'red') && {itemStyle: {color: 'red'}})
+     
+        traceDurations.push([startTimeUnixMs, duration, spanCount, errorCount, name])
+    }
+
+
+
+    // creates an 2D array where the top row is the category and the following rows are the data values
     let traceDurationData = [['startTimeUnixMs', 'duration', 'spanCount', 'errorCount', 'name'], ...traceDurations];
 
 
-    const scatterSeries:ScatterSeriesOption = {
-      type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
-      dimensions: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name'],
-      encode: {
-        x: 'startTimeUnixMs',
-        y: 'duration',
-        tooltip: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name']
-      },
-      data: traceDurationData,
-      symbolSize: function(data) {
-        const spanCount = data[2]
-        const scaleSymbolSize = 7
-        return spanCount * scaleSymbolSize
-      },
-      itemStyle: {
-        color: function(params){ // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
-          const dataValues = params?.data as [Date, number,number, number]
-          // If there is an error in a span, color the datapoint red 
-          const errorCount =  dataValues[3]
-          if (errorCount !== undefined && errorCount > 0) {
-            return 'red'
-          }
-          // Else return default color
-          const defaultColor = "#56B4E9"
-          const dataPointColor = (params.color !== undefined) ? params.color : defaultColor
-          return dataPointColor
+  //   const scatterSeries:ScatterSeriesOption = {
+  //     type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
+  //     dimensions: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name'],
+  //     encode: {
+  //       x: 'startTimeUnixMs',
+  //       y: 'duration',
+  //       tooltip: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name']
+  //     },
+  //     data: traceDurationData,
+  //     symbolSize: function(data) {
+  //       const spanCount = data[2]
+  //       const scaleSymbolSize = 7
+  //       return spanCount * scaleSymbolSize
+  //     },
+  //     itemStyle: {
+  //       color: function(params){ // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
+  //         const dataValues = params?.data as [Date, number,number, number]
+  //         // If there is an error in a span, color the datapoint red 
+  //         const errorCount =  dataValues[3]
+  //         if (errorCount !== undefined && errorCount > 0) {
+  //           return 'red'
+  //         }
+  //         // Else return default color
+  //         const defaultColor = "#56B4E9"
+  //         const dataPointColor = (params.color !== undefined) ? params.color : defaultColor
+  //         return dataPointColor
+  //       }
+  //     }
+  //   };
+  //   seriesData.push(scatterSeries);
+  //   console.log('JZ /pie traceSeriesData , ', seriesData)
+  //   return seriesData;
+  // }, [traceIsLoading]);
+
+
+  const scatterSeries:ScatterSeriesOption = {
+    type: 'scatter', // https://echarts.apache.org/en/option.html#series-scatter.type
+    dimensions: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name'],
+    encode: {
+      x: 'startTimeUnixMs',
+      y: 'duration',
+      tooltip: ['startTimeUnixMs', 'durationMs', 'spanCount', 'errorCount', 'name']
+    },
+    data: traceDurationData,
+    symbolSize: function(data) {
+      const spanCount = data[2]
+      const scaleSymbolSize = 7
+      return spanCount * scaleSymbolSize
+    },
+    itemStyle: {
+      color: function(params){ // https://stackoverflow.com/questions/56715577/scatter-plot-with-colored-markers-colormap-in-echarts
+        const dataValues = params?.data as [Date, number,number, number]
+        // If there is an error in a span, color the datapoint red 
+        const errorCount =  dataValues[3]
+        if (errorCount !== undefined && errorCount > 0) {
+          return 'red'
         }
+        // Else return default color
+        const defaultColor = "#56B4E9"
+        const dataPointColor = (params.color !== undefined) ? params.color : defaultColor
+        return dataPointColor
       }
-    };
-    seriesData.push(scatterSeries);
-    console.log('JZ /pie traceSeriesData , ', seriesData)
-    return seriesData;
-  }, [traceIsLoading]);
+    }
+  };
+  seriesData.push(scatterSeries);
+  console.log('JZ /pie traceSeriesData , ', seriesData)
+  return seriesData;
+}, [traceIsLoading]);
 
   console.log('JZ scatterTraceData : ', JSON.stringify(scatterTraceData, null, 2));
 
@@ -117,6 +222,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     );
   }
   return (
-    <Scatterplot width={contentDimensions.width} height={contentDimensions.height} data={scatterTraceData}/>
+    <Scatterplot width={contentDimensions.width} height={contentDimensions.height} data={scatterTraceData} dataset={scatterTraceData2}/>
   );
 }
