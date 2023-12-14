@@ -9,6 +9,8 @@ import { TimeSeriesQueryDefinition } from '@perses-dev/core';
 import { useDataQueries } from '@perses-dev/plugin-system';
 import { EChartsOption } from 'echarts';
 import { SeriesOption } from 'echarts';
+import { ErrorAlert } from '@perses-dev/components';
+import { convertThresholds } from '../../model/thresholds';
 
 export type ScatterChartPanelProps = PanelProps<ScatterChartOptions>;
 
@@ -36,15 +38,23 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
   
 
 
-
+  const traceData = traceResults[0]?.data
+  if (traceData === undefined) {
+    return [];
+  }
+  if (traceData.traces.length === 0 ){
+      const query = traceData.metadata?.executedQueryString
+      const message = `No traces found for the query : " ${query} " .`;
+      const alertMessage = {
+        name: message, 
+        message: message, 
+      }
+      return <ErrorAlert error={alertMessage}/>
+  }
 
   // Tempo API data transformation and chart formatting to fit requirements for eCharts:
   // https://echarts.apache.org/handbook/en/concepts/dataset
   const dataset = useMemo(() => {
-    const traceData = traceResults[0]?.data
-    if (traceData === undefined) {
-      return [];
-    }
     // Transform data from api to fit format of apache eCharts 
     const source = traceData.traces.map((trace) => {
       return {
