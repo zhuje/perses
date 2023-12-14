@@ -28,8 +28,13 @@ export function PluginEditor(props: PluginEditorProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { value, pluginType, pluginKindLabel, onChange: _, isReadonly, isExplore, ...others } = props;
   const { pendingKind, isLoading, error, onKindChange, onSpecChange } = usePluginEditor(props);
+  
+  console.log('/editor PluginEditor plugintype: ', pluginType)
+  console.log('/editor PluginEditor props: ', props)
+
   return (
     <Box {...others}>
+      <h1> PluginKindSelect Component </h1>
       <PluginKindSelect
         fullWidth={false}
         sx={{ mb: 1, minWidth: 120 }}
@@ -43,6 +48,7 @@ export function PluginEditor(props: PluginEditorProps) {
         helperText={error?.message}
         onChange={onKindChange}
       />
+      <h1> PluginSpecEditor Component </h1>
       <PluginSpecEditor
         isExplore={isExplore}
         pluginType={pluginType}

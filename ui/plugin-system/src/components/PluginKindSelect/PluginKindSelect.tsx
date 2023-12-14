@@ -28,6 +28,8 @@ export const PluginKindSelect = forwardRef((props: PluginKindSelectProps, ref) =
   const { pluginType, value: propValue, ...others } = props;
   const { data, isLoading } = useListPluginMetadata(pluginType);
 
+  console.log('PluginKindSelect > useListPluginMetadata(pluginType) :', data)
+
   // Pass an empty value while options are still loading so MUI doesn't complain about us using an "out of range" value
   const value = propValue !== '' && isLoading ? '' : propValue;
 

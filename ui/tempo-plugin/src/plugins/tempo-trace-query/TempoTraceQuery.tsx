@@ -12,12 +12,17 @@
 // limitations under the License.
 
 import { getTraceData } from './get-trace-data';
+import { TempoTraceQueryEditor } from './TempoTraceQueryEditor';
+
+
+
 
 /**
  * The core Tempo TraceQuery plugin for Perses.
  */
 export const TempoTraceQuery = {
   getTraceData,
+  OptionsEditorComponent: TempoTraceQueryEditor,
   createInitialOptions: () => ({
     query: '{}',
     datasource: undefined,

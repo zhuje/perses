@@ -46,6 +46,7 @@ export const OptionsEditorTabs = ({ tabs }: OptionsEditorTabsProps) => {
                 id={`options-editor-tab-${i}`}
                 aria-controls={`options-editor-tabpanel-${i}`}
               />
+              
             );
           })}
         </Tabs>

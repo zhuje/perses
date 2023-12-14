@@ -13,9 +13,9 @@
 
 import { TraceQueryPlugin } from '@perses-dev/plugin-system';
 import { TraceData, TraceValue } from '@perses-dev/core';
-import { TempoTraceQuerySpec } from '../model/trace-query-model';
-import { TEMPO_DATASOURCE_KIND, TempoDatasourceSelector } from '../model/tempo-selectors';
-import { TempoClient } from '../model/tempo-client';
+import { TempoTraceQuerySpec } from '../../model/trace-query-model';
+import { TEMPO_DATASOURCE_KIND, TempoDatasourceSelector } from '../../model/tempo-selectors';
+import { TempoClient } from '../../model/tempo-client';
 
 export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData'] = async (spec, context) => {
   if (spec.query === undefined || spec.query === null || spec.query === '') {
