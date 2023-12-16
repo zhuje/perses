@@ -53,6 +53,10 @@ export const getTimeSeriesData: TimeSeriesQueryPlugin<PrometheusTimeSeriesQueryS
   const timeRange = getPrometheusTimeRange(context.timeRange);
   const step = getRangeStep(timeRange, minStep, undefined, context.suggestedStepMs); // TODO: resolution
 
+
+  console.log('/time get-time-series-data: > context.timeRange: ', context.timeRange)
+
+
   // Align the time range so that it's a multiple of the step
   let { start, end } = timeRange;
   const utcOffsetSec = new Date().getTimezoneOffset() * 60;

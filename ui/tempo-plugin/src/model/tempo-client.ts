@@ -42,7 +42,10 @@ function fetchWithGet<TResponse>(apiURI: string, datasourceUrl: string) {
  * Returns a summary report of traces that satisfy the query.
  */
 export function searchTraceQuery(query: string, datasourceUrl: string) {
-  return fetchWithGet<SearchTraceQueryResponse>(`/api/search?q=${encodeURIComponent(query)}`, datasourceUrl);
+  console.log('/time serachTraceQuery > query : ', query)
+  console.log('/time serachTraceQuery > encodeURIComponent(query) : ', encodeURIComponent(query))
+
+  return fetchWithGet<SearchTraceQueryResponse>(`/api/search?q=${query}`, datasourceUrl);
 }
 
 /**

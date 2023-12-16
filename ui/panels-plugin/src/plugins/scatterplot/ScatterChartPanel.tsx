@@ -12,6 +12,14 @@ import { SeriesOption } from 'echarts';
 import { ErrorAlert } from '@perses-dev/components';
 import { convertThresholds } from '../../model/thresholds';
 
+const generateErrorAlert = ((message:string)=>{
+  const alertMessage = {
+    name: message, 
+    message: message, 
+  }
+  return <ErrorAlert error={alertMessage}/>
+})
+
 export type ScatterChartPanelProps = PanelProps<ScatterChartOptions>;
 
 export function ScatterChartPanel(props: ScatterChartPanelProps) {
@@ -19,43 +27,32 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     contentDimensions,
   } = props;
 
+  // TODO: handle both TraceQuery and TimeSeriesQuery -- how to handle switching between query types?
+  // TODO: is there a better way to determine the queryType?
+
   const { queryResults: traceResults, isLoading: traceIsLoading } = useDataQueries('TraceQuery');
   const { queryResults: timeSeriesResults, isLoading: timeSeriesIsLoading } = useDataQueries('TimeSeriesQuery');
 
   const isLoading = traceIsLoading || timeSeriesIsLoading;
 
-
-  console.log('/apple traceResult: ', traceResults)
-  console.log('/apple traceIsLoading >: ', traceIsLoading)
-
-  console.log('/apple timeSeriesResults: ', timeSeriesResults)
-  console.log('/apple timeSeriesIsLoading >: ', timeSeriesIsLoading)
-
-  // TODO: is there a better way to determine the queryType?
-
-
-  // TODO: Handle the case were traces are empty --- the query is valid but no traces are returned 
-  
-
-
   const traceData = traceResults[0]?.data
-  if (traceData === undefined) {
-    return [];
-  }
-  if (traceData.traces.length === 0 ){
-      const query = traceData.metadata?.executedQueryString
-      const message = `No traces found for the query : " ${query} " .`;
-      const alertMessage = {
-        name: message, 
-        message: message, 
-      }
-      return <ErrorAlert error={alertMessage}/>
-  }
 
-  // Tempo API data transformation and chart formatting to fit requirements for eCharts:
+  if (!isLoading && traceData?.traces.length === 0 ){
+    const query = traceData?.metadata?.executedQueryString
+    const message = `No traces found for the query : " ${query} " .`;
+    const alertMessage = {
+      name: message, 
+      message: message, 
+    }
+    return <ErrorAlert error={alertMessage}/>
+}
+
+  // Tempo API data transformation to fit requirements for eCharts:
   // https://echarts.apache.org/handbook/en/concepts/dataset
   const dataset = useMemo(() => {
-    // Transform data from api to fit format of apache eCharts 
+    if (traceData === undefined) {
+      return [];
+    }
     const source = traceData.traces.map((trace) => {
       return {
         ...trace,
@@ -67,7 +64,7 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     }
     return dataset 
   }, [traceIsLoading, traceResults]);
-
+  
   const seriesFormatting:SeriesOption = 
      {
         type: 'scatter',
@@ -113,6 +110,7 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
       </Box>
     );
   }
+
   return (
     <Scatterplot width={contentDimensions.width} height={contentDimensions.height} options={options}/>
   );

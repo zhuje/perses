@@ -16,7 +16,16 @@ import { TraceData, TraceValue } from '@perses-dev/core';
 import { TempoTraceQuerySpec } from '../../model/trace-query-model';
 import { TEMPO_DATASOURCE_KIND, TempoDatasourceSelector } from '../../model/tempo-selectors';
 import { TempoClient } from '../../model/tempo-client';
+import { getUnixTime } from 'date-fns';
+import { AbsoluteTimeRange } from '@perses-dev/core';
 
+export function getUnixTimeRange(timeRange: AbsoluteTimeRange) {
+  const { start, end } = timeRange;
+  return {
+    start: Math.ceil(getUnixTime(start)),
+    end: Math.ceil(getUnixTime(end)),
+  };
+}
 export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData'] = async (spec, context) => {
   if (spec.query === undefined || spec.query === null || spec.query === '') {
     // Do not make a request to the backend, instead return an empty TraceData
@@ -32,13 +41,26 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
     spec.datasource ?? defaultTempoDatasource
   );
 
+  const {start, end} = getUnixTimeRange(context.absoluteTimeRange)
+  console.log('/time get-trace-data.ts > start, end times: ', start, end )
+
   const datasourceUrl = client?.options?.datasourceUrl;
   if (datasourceUrl === undefined || datasourceUrl === null || datasourceUrl === '') {
     console.error('TempoDatasource is undefined, null, or an empty string.');
     return { traces: [] };
   }
 
-  const enrichedTraceResponse = await client.getEnrichedTraceQuery(spec.query, datasourceUrl);
+  const queryStartTime = "&start=" + start
+  const queryEndTime = "&end=" + end
+  const queryWithTimeRange = encodeURI(spec.query) + queryStartTime + queryEndTime 
+  
+
+
+  console.log('queryWithTimeRange: ', queryWithTimeRange)
+  console.log('encodeURI(queryWithTimeRange): ', encodeURI(queryWithTimeRange))
+
+
+  const enrichedTraceResponse = await client.getEnrichedTraceQuery(queryWithTimeRange, datasourceUrl);
 
   const traces: TraceValue[] = enrichedTraceResponse.traces.map((traceValue) => {
     const startTimeUnixMs = parseInt(traceValue.summary.startTimeUnixNano) * 1e-6 // convert to millisecond for eChart time format

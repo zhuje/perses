@@ -84,14 +84,15 @@ export function PanelSpecEditor(props: PanelSpecEditorProps) {
     case 'TraceQuery':
       return <TraceQueryEditor queries={panelDefinition.spec.queries ?? []} onChange={onQueriesChange} />
     default: 
-        const message = "This query kind, `" + queryType + "` , is not recognized." 
-        const error = {
-          name: message,
-          message: message
-        }
-        return(
-          <ErrorAlert error={error}/>
-        )
+        // const message = "This query kind, `" + queryType + "` , is not recognized." 
+        // const error = {
+        //   name: message,
+        //   message: message
+        // }
+        // return(
+        //   <ErrorAlert error={error}/>
+        // )
+      return <TimeSeriesQueryEditor queries={panelDefinition.spec.queries ?? []} onChange={onQueriesChange} />
     }
   })
 

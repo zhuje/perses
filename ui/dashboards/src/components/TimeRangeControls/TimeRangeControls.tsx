@@ -79,6 +79,8 @@ export function TimeRangeControls({
     }
   }
 
+  console.log('TimeRangeControls dashboard: ', dashboard)
+
   // set the new refresh interval both in the dashboard context & as query param
   const handleRefreshIntervalChange = useCallback(
     (duration: DurationString) => {
