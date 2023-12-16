@@ -14,9 +14,11 @@
 import { usePlugin, PanelProps } from '@perses-dev/plugin-system';
 import { Skeleton } from '@mui/material';
 import { UnknownSpec } from '@perses-dev/core';
+import { PanelDefinition } from '@perses-dev/core';
 
 export interface PanelContentProps extends PanelProps<UnknownSpec> {
   panelPluginKind: string;
+  definition?: PanelDefinition<UnknownSpec>;
 }
 
 /**
@@ -24,9 +26,11 @@ export interface PanelContentProps extends PanelProps<UnknownSpec> {
  * definition's kind. Used so that an ErrorBoundary can be wrapped around this.
  */
 export function PanelContent(props: PanelContentProps) {
-  const { panelPluginKind, contentDimensions, ...others } = props;
+  const { panelPluginKind, contentDimensions, definition, ...others } = props;
   const { data: plugin, isLoading } = usePlugin('Panel', panelPluginKind, { useErrorBoundary: true });
   const PanelComponent = plugin?.PanelComponent;
+
+  console.log('PanelContent > definition:  ', definition);
 
   if (isLoading) {
     return (
@@ -43,5 +47,5 @@ export function PanelContent(props: PanelContentProps) {
     throw new Error(`Missing PanelComponent from panel plugin for kind '${panelPluginKind}'`);
   }
 
-  return <PanelComponent {...others} contentDimensions={contentDimensions} />;
+  return <PanelComponent {...others} contentDimensions={contentDimensions} definition={definition}/>;
 }

@@ -1,7 +1,7 @@
 import { useTimeSeriesQuery, PanelProps } from '@perses-dev/plugin-system';
 import { Box, Skeleton } from '@mui/material';
 import { ScatterSeriesOption } from 'echarts/charts';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ScatterChartOptions } from './scatter-chart-model';
 import { Scatterplot } from './Scatterplot';
 import { useSuggestedStepMs } from './utils';
@@ -11,6 +11,17 @@ import { EChartsOption } from 'echarts';
 import { SeriesOption } from 'echarts';
 import { ErrorAlert } from '@perses-dev/components';
 import { convertThresholds } from '../../model/thresholds';
+import { useTimeRange } from '@perses-dev/plugin-system';
+import { getUnixTime } from 'date-fns';
+import { AbsoluteTimeRange } from '@perses-dev/core';
+
+export function getUnixTimeRange(timeRange: AbsoluteTimeRange) {
+    const { start, end } = timeRange;
+    return {
+      start: Math.ceil(getUnixTime(start)),
+      end: Math.ceil(getUnixTime(end)),
+    };
+}
 
 const generateErrorAlert = ((message:string)=>{
   const alertMessage = {
@@ -25,7 +36,36 @@ export type ScatterChartPanelProps = PanelProps<ScatterChartOptions>;
 export function ScatterChartPanel(props: ScatterChartPanelProps) {
   const {
     contentDimensions,
+    definition,
   } = props;
+
+  console.log(`ScatterChartPanel props:`, props);
+  const { absoluteTimeRange } = useTimeRange();
+
+  const containsTempoQuery = ()=>{
+    let isTempoQuery = false;
+    const queries = definition?.spec?.queries; 
+    queries?.forEach((query) => {
+      if(query.spec.plugin.kind === 'TempoTraceQuery'){
+        isTempoQuery = true;
+      }
+    })
+    return isTempoQuery;  
+  }
+
+  console.log('containsTempoQuery() : ', containsTempoQuery())
+
+
+  // TODO: TEMPO only supports queries from the past 7 days 
+  const isGreaterThanSevenDays = (():boolean=>{
+    const { start, end } = getUnixTimeRange(absoluteTimeRange)
+    const sevenDays = 604800
+    return (end-start > sevenDays)
+  })
+  
+  if(isGreaterThanSevenDays() === true && containsTempoQuery() === true){
+    return generateErrorAlert('Tempo queries can not exceed a time range of 7 days.')
+  }
 
   // TODO: handle both TraceQuery and TimeSeriesQuery -- how to handle switching between query types?
   // TODO: is there a better way to determine the queryType?

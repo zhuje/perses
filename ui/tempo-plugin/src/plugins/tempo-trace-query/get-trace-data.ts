@@ -16,16 +16,8 @@ import { TraceData, TraceValue } from '@perses-dev/core';
 import { TempoTraceQuerySpec } from '../../model/trace-query-model';
 import { TEMPO_DATASOURCE_KIND, TempoDatasourceSelector } from '../../model/tempo-selectors';
 import { TempoClient } from '../../model/tempo-client';
-import { getUnixTime } from 'date-fns';
-import { AbsoluteTimeRange } from '@perses-dev/core';
+import { getUnixTimeRange } from '../../util';
 
-export function getUnixTimeRange(timeRange: AbsoluteTimeRange) {
-  const { start, end } = timeRange;
-  return {
-    start: Math.ceil(getUnixTime(start)),
-    end: Math.ceil(getUnixTime(end)),
-  };
-}
 export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData'] = async (spec, context) => {
   if (spec.query === undefined || spec.query === null || spec.query === '') {
     // Do not make a request to the backend, instead return an empty TraceData

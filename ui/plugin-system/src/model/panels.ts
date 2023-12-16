@@ -15,6 +15,7 @@ import React from 'react';
 import { UnknownSpec } from '@perses-dev/core';
 import { OptionsEditorTab } from '../components';
 import { OptionsEditorProps, Plugin } from './plugin-base';
+import { PanelDefinition } from '@perses-dev/core';
 
 export type PanelOptionsEditorComponent<T> = Pick<OptionsEditorTab, 'label'> & {
   content: React.ComponentType<OptionsEditorProps<T>>;
@@ -44,4 +45,5 @@ export interface PanelProps<Spec> {
     width: number;
     height: number;
   };
+  definition?: PanelDefinition;
 }

@@ -14,6 +14,7 @@
 import { fetch, RequestHeaders } from '@perses-dev/core';
 import { DatasourceClient } from '@perses-dev/plugin-system';
 import { SearchTraceIDResponse, EnrichedTraceQueryResponse, SearchTraceQueryResponse } from './api-types';
+import { useState } from 'react';
 
 interface TempoClientOptions {
   datasourceUrl: string;
@@ -42,9 +43,6 @@ function fetchWithGet<TResponse>(apiURI: string, datasourceUrl: string) {
  * Returns a summary report of traces that satisfy the query.
  */
 export function searchTraceQuery(query: string, datasourceUrl: string) {
-  console.log('/time serachTraceQuery > query : ', query)
-  console.log('/time serachTraceQuery > encodeURIComponent(query) : ', encodeURIComponent(query))
-
   return fetchWithGet<SearchTraceQueryResponse>(`/api/search?q=${query}`, datasourceUrl);
 }
 
@@ -69,9 +67,12 @@ export function searchTraceID(traceID: string, datasourceUrl: string) {
 export async function getEnrichedTraceQuery(query: string, datasourceUrl: string): Promise<EnrichedTraceQueryResponse> {
   // Get a list of traces that satisfy the query.
   const searchResponse = await searchTraceQuery(query, datasourceUrl);
+  console.log('/searchResponse error: ', searchResponse)
+
   if (!searchResponse.traces) {
     return { query, traces: [] };
   }
+
 
   return {
     query,

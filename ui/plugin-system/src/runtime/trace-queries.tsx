@@ -20,6 +20,16 @@ import { useState, useEffect } from 'react';
 export type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
 export const TRACE_QUERY_KEY = 'TraceQuery';
 import { TraceQueryContext } from '../model';
+import { getUnixTime } from 'date-fns';
+import { AbsoluteTimeRange } from '@perses-dev/core';
+
+export function getUnixTimeRange(timeRange: AbsoluteTimeRange) {
+  const { start, end } = timeRange;
+  return {
+    start: Math.ceil(getUnixTime(start)),
+    end: Math.ceil(getUnixTime(end)),
+  };
+}
 
 function useTimeSeriesQueryContext() {
   const { absoluteTimeRange} = useTimeRange();
