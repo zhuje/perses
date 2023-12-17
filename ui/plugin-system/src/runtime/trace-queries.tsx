@@ -52,6 +52,8 @@ export function useTraceQueries(definitions: TraceQueryDefinition[]) {
   const datasourceStore = useDatasourceStore();
   const { absoluteTimeRange } = useTimeRange();
 
+  console.log('absoluteTimeRange = ' + JSON.stringify(absoluteTimeRange))
+
   const context = {
     datasourceStore,
     absoluteTimeRange

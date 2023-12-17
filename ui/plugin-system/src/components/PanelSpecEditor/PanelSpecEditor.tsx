@@ -84,14 +84,10 @@ export function PanelSpecEditor(props: PanelSpecEditorProps) {
     case 'TraceQuery':
       return <TraceQueryEditor queries={panelDefinition.spec.queries ?? []} onChange={onQueriesChange} />
     default: 
-        // const message = "This query kind, `" + queryType + "` , is not recognized." 
-        // const error = {
-        //   name: message,
-        //   message: message
-        // }
-        // return(
-        //   <ErrorAlert error={error}/>
-        // )
+        // handles the case of adding a new Panel when there's no query yet
+        if (kind === 'ScatterChart'){ 
+          return  <TraceQueryEditor queries={panelDefinition.spec.queries ?? []} onChange={onQueriesChange} />
+        }
       return <TimeSeriesQueryEditor queries={panelDefinition.spec.queries ?? []} onChange={onQueriesChange} />
     }
   })

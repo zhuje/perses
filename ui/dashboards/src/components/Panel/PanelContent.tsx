@@ -30,8 +30,6 @@ export function PanelContent(props: PanelContentProps) {
   const { data: plugin, isLoading } = usePlugin('Panel', panelPluginKind, { useErrorBoundary: true });
   const PanelComponent = plugin?.PanelComponent;
 
-  console.log('PanelContent > definition:  ', definition);
-
   if (isLoading) {
     return (
       <Skeleton

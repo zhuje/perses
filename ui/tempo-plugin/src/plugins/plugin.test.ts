@@ -45,13 +45,18 @@ const getDatasource: jest.Mock = jest.fn((): DatasourceSpec<TempoDatasourceSpec>
   };
 });
 
+
 const stubTempoContext: TraceQueryContext = {
   datasourceStore: {
     getDatasource: getDatasource,
     getDatasourceClient: getDatasourceClient,
     listDatasourceSelectItems: jest.fn(),
   },
-};
+  absoluteTimeRange: {
+    start: new Date("2023-12-16T21:57:48.057Z"), // last 1 hour 
+    end: new Date("2023-12-16T22:57:48.057Z"),
+  }
+}
 
 describe('TempoTraceQuery', () => {
   it('should return trace query results', async () => {

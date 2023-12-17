@@ -29,7 +29,7 @@ export interface TraceQueryPlugin<Spec = UnknownSpec> extends Plugin<Spec> {
  */
 export interface TraceQueryContext {
   datasourceStore: DatasourceStore;
-  absoluteTimeRange: AbsoluteTimeRange;
+  absoluteTimeRange?: AbsoluteTimeRange;
 }
 
 export type TraceDataQuery = Query<TraceData, unknown, TraceData, QueryKey>;

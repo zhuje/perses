@@ -33,26 +33,30 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
     spec.datasource ?? defaultTempoDatasource
   );
 
-  const {start, end} = getUnixTimeRange(context.absoluteTimeRange)
-  console.log('/time get-trace-data.ts > start, end times: ', start, end )
-
   const datasourceUrl = client?.options?.datasourceUrl;
   if (datasourceUrl === undefined || datasourceUrl === null || datasourceUrl === '') {
     console.error('TempoDatasource is undefined, null, or an empty string.');
     return { traces: [] };
   }
 
-  const queryStartTime = "&start=" + start
-  const queryEndTime = "&end=" + end
-  const queryWithTimeRange = encodeURI(spec.query) + queryStartTime + queryEndTime 
-  
+  const getQuery = (()=>{
+    // if time range not defined -- only return the query from the spec
+    if (context.absoluteTimeRange === undefined){
+      return spec.query;
+    }
+    // if the query already contains a time range (i.e.start and end times)
+    if (spec.query.includes('start=') || spec.query.includes('end=')){
+      return spec.query;
+    } 
+    // handle time range selection from UI drop down (e.g. last 5 minutes, last 1 hour )
+    const {start, end} = getUnixTimeRange(context?.absoluteTimeRange)
+    const queryStartTime = "&start=" + start
+    const queryEndTime = "&end=" + end
+    const queryWithTimeRange = encodeURI(spec.query) + queryStartTime + queryEndTime 
+    return queryWithTimeRange
+  })
 
-
-  console.log('queryWithTimeRange: ', queryWithTimeRange)
-  console.log('encodeURI(queryWithTimeRange): ', encodeURI(queryWithTimeRange))
-
-
-  const enrichedTraceResponse = await client.getEnrichedTraceQuery(queryWithTimeRange, datasourceUrl);
+  const enrichedTraceResponse = await client.getEnrichedTraceQuery(getQuery(), datasourceUrl);
 
   const traces: TraceValue[] = enrichedTraceResponse.traces.map((traceValue) => {
     const startTimeUnixMs = parseInt(traceValue.summary.startTimeUnixNano) * 1e-6 // convert to millisecond for eChart time format
