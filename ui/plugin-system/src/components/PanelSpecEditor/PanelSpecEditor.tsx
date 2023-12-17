@@ -31,8 +31,6 @@ export function PanelSpecEditor(props: PanelSpecEditorProps) {
   const { panelDefinition, onJSONChange, onQueriesChange, onPluginSpecChange } = props;
   const { kind } = panelDefinition.spec.plugin;
   const { data: plugin, isLoading, error } = usePlugin('Panel', kind);
-
-  console.log('/editor PanelSpecEditor prop: ', props)
   
   let errorAlert = ((description: string) => {
     return {

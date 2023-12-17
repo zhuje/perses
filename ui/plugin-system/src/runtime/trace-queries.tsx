@@ -52,8 +52,6 @@ export function useTraceQueries(definitions: TraceQueryDefinition[]) {
   const datasourceStore = useDatasourceStore();
   const { absoluteTimeRange } = useTimeRange();
 
-  console.log('absoluteTimeRange = ' + JSON.stringify(absoluteTimeRange))
-
   const context = {
     datasourceStore,
     absoluteTimeRange
@@ -68,7 +66,6 @@ export function useTraceQueries(definitions: TraceQueryDefinition[]) {
       return {
         queryKey: queryKey,
         queryFn: async () => {
-          console.log('/time in useQueries trace-queries', context)
           const plugin = await getPlugin(TRACE_QUERY_KEY, traceQueryKind);
           const data = await plugin.getTraceData(definition.spec.plugin.spec, context);
           return data;

@@ -39,7 +39,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     definition,
   } = props;
 
-  console.log(`ScatterChartPanel props:`, props);
   const { absoluteTimeRange } = useTimeRange();
 
   const containsTempoQuery = ()=>{
@@ -52,9 +51,6 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     })
     return isTempoQuery;  
   }
-
-  console.log('containsTempoQuery() : ', containsTempoQuery())
-
 
   // TODO: TEMPO only supports queries from the past 7 days 
   const isGreaterThanSevenDays = (():boolean=>{

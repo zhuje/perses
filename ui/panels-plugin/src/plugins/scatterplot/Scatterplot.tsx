@@ -22,8 +22,6 @@ export function Scatterplot(props: ScatterplotProps) {
   const { width, height, xAxis, options } = props;
   const chartsTheme = useChartsTheme();
 
-  console.log('JZ Scatterplot > Options, ', options)
-
   var eChartOptions:EChartsCoreOption = {
     dataset: options.dataset,
     series: options.series,
@@ -54,7 +52,6 @@ export function Scatterplot(props: ScatterplotProps) {
         type: 'cross',
       },
       formatter: function(param:any) {
-        console.log('JZ /bread : ', param)
         param = param[0];
         return [
           '<b>time</b>: ' + param.data.startTimeUnixMs + '<br/>',

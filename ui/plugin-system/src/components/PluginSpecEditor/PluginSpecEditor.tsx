@@ -26,8 +26,6 @@ export function PluginSpecEditor(props: PluginSpecEditorProps) {
   const { pluginType, pluginKind, ...others } = props;
   const { data: plugin, isLoading, error } = usePlugin(pluginType, pluginKind);
 
-  console.log("/editor PluginSpecEditor pluginKind,plluginType: ,", pluginKind, pluginType)
-
   if (error) {
     return <ErrorAlert error={error} />;
   }
@@ -47,10 +45,6 @@ export function PluginSpecEditor(props: PluginSpecEditorProps) {
   }
 
   const { OptionsEditorComponent } = plugin;
-
-  console.log("/editor plugin: ,", plugin)
-
-
 
   if (OptionsEditorComponent !== undefined) {
     return <OptionsEditorComponent {...others} />;
