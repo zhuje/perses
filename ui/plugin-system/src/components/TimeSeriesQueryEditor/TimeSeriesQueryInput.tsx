@@ -38,7 +38,6 @@ export const TimeSeriesQueryInput = ({
 }: TimeSeriesQueryInputProps) => {
   return (
     <Stack key={index} spacing={1}>
-      <h1> TimeSeriesQueryInput Component</h1>
       <Stack direction="row" alignItems="center" borderBottom={1} borderColor={(theme) => theme.palette.divider}>
         <IconButton size="small" onClick={() => onCollapseExpand(index)}>
           {isCollapsed ? <ChevronRight /> : <ChevronDown />}
@@ -88,8 +87,6 @@ function QueryEditor(props: QueryEditorProps) {
 
   return (
     <Box {...others}>
-      <h1> QueryEditor Component</h1>
-
       {/* If TimeSeriesQuery plugins ever have common props on the definition, the inputs could go here */}
       <PluginEditor
         pluginType="TimeSeriesQuery"

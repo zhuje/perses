@@ -31,7 +31,6 @@ export function PluginEditor(props: PluginEditorProps) {
 
   return (
     <Box {...others}>
-      <h1> PluginKindSelect Component </h1>
       <PluginKindSelect
         fullWidth={false}
         sx={{ mb: 1, minWidth: 120 }}
@@ -45,7 +44,6 @@ export function PluginEditor(props: PluginEditorProps) {
         helperText={error?.message}
         onChange={onKindChange}
       />
-      <h1> PluginSpecEditor Component </h1>
       <PluginSpecEditor
         isExplore={isExplore}
         pluginType={pluginType}

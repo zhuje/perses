@@ -27,5 +27,5 @@ import (
 
 kind: "ScatterChart"
 spec: close({
-	yAxis?:      #yAxis
+	yAxis?: #yAxis
 })

@@ -116,7 +116,6 @@ export function TraceQueryEditor({ queries = [], onChange }: TraceQueryEditorPro
     <>
       <Stack spacing={1}>
         {queryDefinitions.map((query: TraceQueryDefinition, i: number) => (
-          // <h1> TempoQueryInput Component </h1>
           <TraceQueryInput
             key={i}
             index={i}
