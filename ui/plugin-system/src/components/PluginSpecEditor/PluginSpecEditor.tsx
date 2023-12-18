@@ -35,7 +35,6 @@ export function PluginSpecEditor(props: PluginSpecEditorProps) {
     return null;
   }
 
-
   if (plugin === undefined) {
     throw new Error(`Missing implementation for ${pluginType} plugin with kind '${pluginKind}'`);
   }

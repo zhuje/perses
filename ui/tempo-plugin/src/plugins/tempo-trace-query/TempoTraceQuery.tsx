@@ -14,9 +14,6 @@
 import { getTraceData } from './get-trace-data';
 import { TempoTraceQueryEditor } from './TempoTraceQueryEditor';
 
-
-
-
 /**
  * The core Tempo TraceQuery plugin for Perses.
  */

@@ -39,27 +39,27 @@ export const getTraceData: TraceQueryPlugin<TempoTraceQuerySpec>['getTraceData']
     return { traces: [] };
   }
 
-  const getQuery = (()=>{
+  const getQuery = () => {
     // if time range not defined -- only return the query from the spec
-    if (context.absoluteTimeRange === undefined){
+    if (context.absoluteTimeRange === undefined) {
       return spec.query;
     }
     // if the query already contains a time range (i.e.start and end times)
-    if (spec.query.includes('start=') || spec.query.includes('end=')){
+    if (spec.query.includes('start=') || spec.query.includes('end=')) {
       return spec.query;
-    } 
+    }
     // handle time range selection from UI drop down (e.g. last 5 minutes, last 1 hour )
-    const {start, end} = getUnixTimeRange(context?.absoluteTimeRange)
-    const queryStartTime = "&start=" + start
-    const queryEndTime = "&end=" + end
-    const queryWithTimeRange = encodeURI(spec.query) + queryStartTime + queryEndTime 
-    return queryWithTimeRange
-  })
+    const { start, end } = getUnixTimeRange(context?.absoluteTimeRange);
+    const queryStartTime = '&start=' + start;
+    const queryEndTime = '&end=' + end;
+    const queryWithTimeRange = encodeURI(spec.query) + queryStartTime + queryEndTime;
+    return queryWithTimeRange;
+  };
 
   const enrichedTraceResponse = await client.getEnrichedTraceQuery(getQuery(), datasourceUrl);
 
   const traces: TraceValue[] = enrichedTraceResponse.traces.map((traceValue) => {
-    const startTimeUnixMs = parseInt(traceValue.summary.startTimeUnixNano) * 1e-6 // convert to millisecond for eChart time format
+    const startTimeUnixMs = parseInt(traceValue.summary.startTimeUnixNano) * 1e-6; // convert to millisecond for eChart time format
     const durationMs = traceValue.summary.durationMs;
     const spanCount = traceValue.spanCount;
     const errorCount = traceValue.errorCount;

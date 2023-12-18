@@ -14,7 +14,6 @@
 import { useState } from 'react';
 import { produce } from 'immer';
 import { OptionsEditorProps } from '@perses-dev/plugin-system';
-import { DurationString } from '@perses-dev/core';
 import { TempoTraceQuerySpec } from '../../model/trace-query-model';
 
 export type TraceQueryEditorProps = OptionsEditorProps<TempoTraceQuerySpec>;
@@ -57,5 +56,3 @@ export function useQueryState(props: TraceQueryEditorProps) {
 
   return { query, handleQueryChange, handleQueryBlur };
 }
-
-

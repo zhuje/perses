@@ -13,8 +13,7 @@
 
 import { usePlugin, PanelProps } from '@perses-dev/plugin-system';
 import { Skeleton } from '@mui/material';
-import { UnknownSpec } from '@perses-dev/core';
-import { PanelDefinition } from '@perses-dev/core';
+import { UnknownSpec, PanelDefinition } from '@perses-dev/core';
 
 export interface PanelContentProps extends PanelProps<UnknownSpec> {
   panelPluginKind: string;
@@ -45,5 +44,5 @@ export function PanelContent(props: PanelContentProps) {
     throw new Error(`Missing PanelComponent from panel plugin for kind '${panelPluginKind}'`);
   }
 
-  return <PanelComponent {...others} contentDimensions={contentDimensions} definition={definition}/>;
+  return <PanelComponent {...others} contentDimensions={contentDimensions} definition={definition} />;
 }

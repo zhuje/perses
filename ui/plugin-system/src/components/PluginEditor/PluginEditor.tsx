@@ -28,7 +28,7 @@ export function PluginEditor(props: PluginEditorProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { value, pluginType, pluginKindLabel, onChange: _, isReadonly, isExplore, ...others } = props;
   const { pendingKind, isLoading, error, onKindChange, onSpecChange } = usePluginEditor(props);
-  
+
   return (
     <Box {...others}>
       <h1> PluginKindSelect Component </h1>

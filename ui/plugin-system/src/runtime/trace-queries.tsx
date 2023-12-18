@@ -11,33 +11,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryDefinition, UnknownSpec } from '@perses-dev/core';
+import { getUnixTime } from 'date-fns';
+import { QueryDefinition, UnknownSpec, AbsoluteTimeRange } from '@perses-dev/core';
 import { useQueries } from '@tanstack/react-query';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
-import { useState, useEffect } from 'react';
 export type TraceQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'TraceQuery', PluginSpec>;
 export const TRACE_QUERY_KEY = 'TraceQuery';
-import { TraceQueryContext } from '../model';
-import { getUnixTime } from 'date-fns';
-import { AbsoluteTimeRange } from '@perses-dev/core';
 
 export function getUnixTimeRange(timeRange: AbsoluteTimeRange) {
   const { start, end } = timeRange;
   return {
     start: Math.ceil(getUnixTime(start)),
     end: Math.ceil(getUnixTime(end)),
-  };
-}
-
-function useTimeSeriesQueryContext() {
-  const { absoluteTimeRange} = useTimeRange();
-  const datasourceStore = useDatasourceStore();
-
-  return {
-    timeRange: absoluteTimeRange,
-    datasourceStore,
   };
 }
 
@@ -48,13 +35,12 @@ function useTimeSeriesQueryContext() {
  */
 export function useTraceQueries(definitions: TraceQueryDefinition[]) {
   const { getPlugin } = usePluginRegistry();
-
   const datasourceStore = useDatasourceStore();
   const { absoluteTimeRange } = useTimeRange();
 
   const context = {
     datasourceStore,
-    absoluteTimeRange
+    absoluteTimeRange,
   };
 
   // useQueries() handles data fetching from query plugins (e.g. traceQL queries, promQL queries)

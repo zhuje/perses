@@ -88,7 +88,7 @@ function QueryEditor(props: QueryEditorProps) {
 
   return (
     <Box {...others}>
-            <h1> QueryEditor Component</h1>
+      <h1> QueryEditor Component</h1>
 
       {/* If TimeSeriesQuery plugins ever have common props on the definition, the inputs could go here */}
       <PluginEditor

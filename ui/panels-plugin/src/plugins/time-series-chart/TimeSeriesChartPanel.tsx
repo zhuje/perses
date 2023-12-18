@@ -372,6 +372,9 @@ export function TimeSeriesChartPanel(props: TimeSeriesChartProps) {
     enablePinning,
   };
 
+  console.log('TimeSeriesChartPanel > timeChartData  : ', timeChartData);
+  console.log('TimeSeriesChartPanel > timeSeriesMapping  : ', timeSeriesMapping);
+
   return (
     <Box sx={{ padding: `${contentPadding}px` }}>
       <ContentWithLegend
