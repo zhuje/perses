@@ -39,7 +39,7 @@ const generateErrorAlert = (message: string) => {
     name: message,
     message: message,
   };
-  return(
+  return (
     <div data-testid="ScatterChartPanel_ErrorAlert">
       <ErrorAlert error={alertMessage} />
     </div>
@@ -175,5 +175,5 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     <div data-testid="ScatterChartPanel_ScatterPlot">
       <Scatterplot width={contentDimensions.width} height={contentDimensions.height} options={options} />;
     </div>
-    )
+  );
 }

@@ -13,4 +13,3 @@
 
 export * from './mock-query-results';
 export * from './mock-trace-query-results';
-
