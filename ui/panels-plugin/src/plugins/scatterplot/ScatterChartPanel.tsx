@@ -39,7 +39,11 @@ const generateErrorAlert = (message: string) => {
     name: message,
     message: message,
   };
-  return <ErrorAlert error={alertMessage} />;
+  return(
+    <div data-testid="ScatterChartPanel_ErrorAlert">
+      <ErrorAlert error={alertMessage} />
+    </div>
+  );
 };
 
 export type ScatterChartPanelProps = PanelProps<ScatterChartOptions>;
@@ -167,5 +171,9 @@ export function ScatterChartPanel(props: ScatterChartPanelProps) {
     );
   }
 
-  return <Scatterplot width={contentDimensions.width} height={contentDimensions.height} options={options} />;
+  return (
+    <div data-testid="ScatterChartPanel_ScatterPlot">
+      <Scatterplot width={contentDimensions.width} height={contentDimensions.height} options={options} />;
+    </div>
+    )
 }
