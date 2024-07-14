@@ -55,6 +55,14 @@
       },
       {
         "pluginType": "Panel",
+        "kind": "PieChart",
+        "display": {
+          "name": "Pie Chart",
+          "description": ""
+        }
+      },
+      {
+        "pluginType": "Panel",
         "kind": "ScatterChart",
         "display": {
           "name": "Scatter Chart",
