@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BarChart, BarChartData, LoadingOverlay, useChartsTheme } from '@perses-dev/components';
+import { BarChartData, LoadingOverlay, useChartsTheme, PieChart } from '@perses-dev/components';
 import { Box } from '@mui/material';
 import { useMemo } from 'react';
 import { CalculationType, CalculationsMap } from '@perses-dev/core';
@@ -21,7 +21,7 @@ import { calculatePercentages, sortSeriesData } from './utils';
 
 export type BarChartPanelProps = PanelProps<BarChartOptions>;
 
-export function BarChartPanel(props: BarChartPanelProps) {
+export function PieChartPanel(props: BarChartPanelProps) {
   const {
     spec: { calculation, format, sort, mode },
     contentDimensions,
@@ -66,7 +66,7 @@ export function BarChartPanel(props: BarChartPanelProps) {
 
   return (
     <Box sx={{ padding: `${PADDING}px` }}>
-      <BarChart
+      <PieChart
         width={contentDimensions.width - PADDING * 2}
         height={contentDimensions.height - PADDING * 2}
         data={barChartData}

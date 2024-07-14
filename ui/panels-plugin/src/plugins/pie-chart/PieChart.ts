@@ -14,13 +14,13 @@
 import { PanelPlugin } from '@perses-dev/plugin-system';
 import { createInitialBarChartOptions, BarChartOptions } from './bar-chart-model';
 import { BarChartOptionsEditorSettings } from './BarChartOptionsEditorSettings';
-import { BarChartPanel } from './BarChartPanel';
+import { PieChartPanel } from './PieChartPanel';
 
 /**
  * The core BarChart panel plugin for Perses.
  */
 export const PieChart: PanelPlugin<BarChartOptions> = {
-  PanelComponent: BarChartPanel,
+  PanelComponent: PieChartPanel,
   panelOptionsEditorComponents: [
     {
       label: 'Settings',
