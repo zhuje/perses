@@ -51,10 +51,11 @@ export function PieChartPanel(props: PieChartPanelProps) {
     return merge({}, DEFAULT_VISUAL, props.spec.visual);
   }, [props.spec.visual]);
 
-  const { pieChartData, legendItems } = useMemo(() => {
+  const legendItems: LegendItem[] = [];
+
+  const pieChartData = useMemo(() => {
     const calculate = CalculationsMap[calculation as CalculationType];
     const pieChartData: PieChartData[] = [];
-    const legendItems: LegendItem[] = [];
 
     for (let queryIndex = 0; queryIndex < queryResults.length; queryIndex++) {
       const result = queryResults[queryIndex];
@@ -111,10 +112,7 @@ export function PieChartPanel(props: PieChartPanelProps) {
     if (mode === 'percentage') {
       return calculatePercentages(sortedPieChartData);
     } else {
-      return {
-        sortedPieChartData,
-        legendItems,
-      };
+      return sortedPieChartData;
     }
   }, [
     calculation,
@@ -147,10 +145,7 @@ export function PieChartPanel(props: PieChartPanelProps) {
   const [legendSorting, setLegendSorting] = useState<NonNullable<LegendProps['tableProps']>['sorting']>();
 
   const chartRef = useRef<ChartInstance>(null);
-  for (let queryIndex = 0; queryIndex < queryResults.length; queryIndex++) {
-    const result = queryResults[queryIndex];
-    // Skip queries that are still loading or don't have data
-    if (!result || result.isLoading || result.isFetching || result.data === undefined) continue;
+ 
 
     // if (adjustedContentDimensions === undefined) throw 'adjustedContentDimensions is undefined';
     // if (contentDimensions === undefined) throw 'contentDimensions is undefined';
@@ -208,4 +203,4 @@ export function PieChartPanel(props: PieChartPanelProps) {
       </Box>
     );
   }
-}
+
