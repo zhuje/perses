@@ -51,15 +51,14 @@ export function PieChartPanel(props: PieChartPanelProps) {
     return merge({}, DEFAULT_VISUAL, props.spec.visual);
   }, [props.spec.visual]);
 
-  const legendItems: LegendItem[] = [];
-
-  const pieChartData = useMemo(() => {
+  const { pieChartData, legendItems } = useMemo(() => {
     const calculate = CalculationsMap[calculation as CalculationType];
     const pieChartData: PieChartData[] = [];
+    const legendItems: LegendItem[] = [];
 
     for (let queryIndex = 0; queryIndex < queryResults.length; queryIndex++) {
       const result = queryResults[queryIndex];
-      console.log('PieChartPanel', result);
+
       // Skip queries that are still loading or don't have data
       if (!result || result.isLoading || result.isFetching || result.data === undefined) continue;
 
@@ -93,9 +92,6 @@ export function PieChartPanel(props: PieChartPanelProps) {
         };
         pieChartData.push(series);
 
-        console.log('Series Data Value', seriesData.values);
-        console.log({ series });
-
         const seriesId = chartId + seriesData.name + seriesIndex;
         legendItems.push({
           id: seriesId,
@@ -106,14 +102,19 @@ export function PieChartPanel(props: PieChartPanelProps) {
       }
     }
 
-    console.log('PieChartPanel > PieChartData: ', pieChartData);
-
     const sortedPieChartData = sortSeriesData(pieChartData, sort);
+
     if (mode === 'percentage') {
-      return calculatePercentages(sortedPieChartData);
-    } else {
-      return sortedPieChartData;
+      return {
+        pieChartData: calculatePercentages(sortedPieChartData),
+        legendItems,
+      };
     }
+
+    return {
+      pieChartData: sortedPieChartData,
+      legendItems,
+    };
   }, [
     calculation,
     sort,
@@ -145,62 +146,60 @@ export function PieChartPanel(props: PieChartPanelProps) {
   const [legendSorting, setLegendSorting] = useState<NonNullable<LegendProps['tableProps']>['sorting']>();
 
   const chartRef = useRef<ChartInstance>(null);
- 
 
-    // if (adjustedContentDimensions === undefined) throw 'adjustedContentDimensions is undefined';
-    // if (contentDimensions === undefined) throw 'contentDimensions is undefined';
-    // ensures there are fallbacks for unset properties since most
-    // users should not need to customize visual display
+  // if (adjustedContentDimensions === undefined) throw 'adjustedContentDimensions is undefined';
+  // if (contentDimensions === undefined) throw 'contentDimensions is undefined';
+  // ensures there are fallbacks for unset properties since most
+  // users should not need to customize visual display
 
-    if (queryResults[0]?.error) throw queryResults[0]?.error;
-    if (contentDimensions === undefined) return null;
+  if (queryResults[0]?.error) throw queryResults[0]?.error;
+  if (contentDimensions === undefined) return null;
 
-    if (isLoading || isFetching) {
-      return <LoadingOverlay />;
-    }
-
-    return (
-      <Box sx={{ padding: `${PADDING}px` }}>
-        <ContentWithLegend
-          width={adjustedContentDimensions?.width ?? 400}
-          height={adjustedContentDimensions?.height ?? 1000}
-          // Making this small enough that the medium size doesn't get
-          // responsive-handling-ed away when in the panel options editor.
-          minChildrenHeight={50}
-          legendSize={legend?.size}
-          legendProps={
-            legend && {
-              options: legend,
-              data: legendItems,
-              selectedItems: selectedLegendItems,
-              onSelectedItemsChange: setSelectedLegendItems,
-              tableProps: {
-                columns: [],
-                sorting: legendSorting,
-                onSortingChange: setLegendSorting,
-              },
-              onItemMouseOver: (e, { id }) => {
-                chartRef.current?.highlightSeries({ name: id });
-              },
-              onItemMouseOut: () => {
-                chartRef.current?.clearHighlightedSeries();
-              },
-            }
-          }
-        >
-          {({ height, width }) => {
-            return (
-              <Box sx={{ height, width }}>
-                <PieChart
-                  data={pieChartData}
-                  width={contentDimensions.width - PADDING * 2}
-                  height={contentDimensions.height - PADDING * 2}
-                />
-              </Box>
-            );
-          }}
-        </ContentWithLegend>
-      </Box>
-    );
+  if (isLoading || isFetching) {
+    return <LoadingOverlay />;
   }
 
+  return (
+    <Box sx={{ padding: `${PADDING}px` }}>
+      <ContentWithLegend
+        width={adjustedContentDimensions?.width ?? 400}
+        height={adjustedContentDimensions?.height ?? 1000}
+        // Making this small enough that the medium size doesn't get
+        // responsive-handling-ed away when in the panel options editor.
+        minChildrenHeight={50}
+        legendSize={legend?.size}
+        legendProps={
+          legend && {
+            options: legend,
+            data: legendItems,
+            selectedItems: selectedLegendItems,
+            onSelectedItemsChange: setSelectedLegendItems,
+            tableProps: {
+              columns: [],
+              sorting: legendSorting,
+              onSortingChange: setLegendSorting,
+            },
+            onItemMouseOver: (e, { id }) => {
+              chartRef.current?.highlightSeries({ name: id });
+            },
+            onItemMouseOut: () => {
+              chartRef.current?.clearHighlightedSeries();
+            },
+          }
+        }
+      >
+        {({ height, width }) => {
+          return (
+            <Box sx={{ height, width }}>
+              <PieChart
+                data={pieChartData}
+                width={contentDimensions.width - PADDING * 2}
+                height={contentDimensions.height - PADDING * 2}
+              />
+            </Box>
+          );
+        }}
+      </ContentWithLegend>
+    </Box>
+  );
+}
