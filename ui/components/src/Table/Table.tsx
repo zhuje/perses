@@ -72,6 +72,8 @@ export function Table<TableData>({
     onRowSelectionChange?.(newRowSelection);
   };
 
+  console.log({ data });
+
   const handleRowSelectionEvent = useCallback(
     (table: TanstackTable<TableData>, row: Row<TableData>, isModified: boolean) => {
       if (rowSelectionVariant === 'standard' || isModified) {
@@ -184,6 +186,10 @@ export function Table<TableData>({
     },
     [handleRowSelectionEvent, table]
   );
+
+  console.log({ row: table.getRowModel().rows });
+  console.log({ columns: table.getAllFlatColumns() });
+  console.log({ header: table.getHeaderGroups() });
 
   return (
     <VirtualizedTable

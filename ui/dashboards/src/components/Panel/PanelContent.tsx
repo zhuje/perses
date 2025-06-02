@@ -49,6 +49,7 @@ export function PanelContent(props: PanelContentProps): ReactElement {
   const queryResultsWithData = queryResults.flatMap((q) =>
     q.data ? [{ data: q.data, definition: q.definition }] : []
   );
+  console.log({ queryResultsWithData });
   if (queryResultsWithData.length > 0 || queryResults.length === 0) {
     return (
       <PanelPluginLoader

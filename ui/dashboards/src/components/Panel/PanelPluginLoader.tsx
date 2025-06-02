@@ -30,6 +30,14 @@ export function PanelPluginLoader(props: PanelPluginProps): ReactElement {
   const PanelComponent = plugin?.PanelComponent;
   const supportedQueryTypes = plugin?.supportedQueryTypes || [];
 
+  console.log({
+    beans: {
+      kind: kind,
+      queryResults: queryResults,
+      definition: definition,
+    },
+  });
+
   // Show fullsize skeleton if the panel plugin is loading.
   if (isPanelLoading) {
     return (

@@ -24,7 +24,9 @@ import MenuIcon from 'mdi-material-ui/Menu';
 import { QueryData } from '@perses-dev/plugin-system';
 import AlertIcon from 'mdi-material-ui/Alert';
 import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
+import DownloadIcon from 'mdi-material-ui/DownloadOutline';
 import { Link } from '@perses-dev/core';
+
 import {
   ARIA_LABEL_TEXT,
   HEADER_ACTIONS_CONTAINER_NAME,
@@ -193,6 +195,14 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
     return undefined;
   }, [editActions, readHandlers, title]);
 
+  const csvAction = (
+    <InfoTooltip description="Export as CSV">
+      <HeaderIconButton aria-label={ARIA_LABEL_TEXT.movePanel(title)} size="small">
+        <DownloadIcon className="drag-handle" sx={{ cursor: 'grab' }} fontSize="inherit" />
+      </HeaderIconButton>
+    </InfoTooltip>
+  );
+
   const divider = <Box sx={{ flexGrow: 1 }}></Box>;
 
   // if the panel is in non-editing, non-fullscreen mode, show certain icons only on hover
@@ -203,6 +213,7 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
       <>{children}</>
     );
 
+  console.log({ cupcake: queryResults });
   return (
     <>
       {/* small panel width: move all icons except move/grab to overflow menu */}
@@ -214,7 +225,8 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
         {divider}
         <OnHover>
           <OverflowMenu title={title}>
-            {descriptionAction} {linksAction} {queryStateIndicator} {extraActions} {readActions} {editActions}
+            {descriptionAction} {linksAction} {queryStateIndicator} {extraActions} {csvAction} {readActions}
+            {editActions}
           </OverflowMenu>
           {moveAction}
         </OnHover>
@@ -233,7 +245,7 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
         </OnHover>
         {divider} {queryStateIndicator}
         <OnHover>
-          {extraActions} {readActions}
+          {extraActions} {csvAction} {readActions}
           <OverflowMenu title={title}>{editActions}</OverflowMenu>
           {moveAction}
         </OnHover>
@@ -252,7 +264,7 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
         </OnHover>
         {divider} {queryStateIndicator}
         <OnHover>
-          {extraActions} {readActions} {editActions} {moveAction}
+          {extraActions} {csvAction} {readActions} {editActions} {moveAction}
         </OnHover>
       </ConditionalBox>
     </>

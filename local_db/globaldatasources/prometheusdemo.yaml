@@ -1,0 +1,30 @@
+kind: GlobalDatasource
+metadata:
+    name: prometheusdemo
+    createdAt: 2025-06-02T18:11:18.322278Z
+    updatedAt: 2025-06-02T18:11:18.322278Z
+    version: 0
+spec:
+    default: false
+    plugin:
+        kind: PrometheusDatasource
+        spec:
+            proxy:
+                kind: HTTPProxy
+                spec:
+                    allowedEndpoints:
+                        - endpointPattern: /api/v1/labels
+                          method: POST
+                        - endpointPattern: /api/v1/series
+                          method: POST
+                        - endpointPattern: /api/v1/metadata
+                          method: GET
+                        - endpointPattern: /api/v1/query
+                          method: POST
+                        - endpointPattern: /api/v1/query_range
+                          method: POST
+                        - endpointPattern: /api/v1/label/([a-zA-Z0-9_-]+)/values
+                          method: GET
+                        - endpointPattern: /api/v1/parse_query
+                          method: POST
+                    url: https://prometheus.demo.prometheus.io

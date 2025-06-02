@@ -1,0 +1,9 @@
+kind: Project
+metadata:
+    name: test
+    createdAt: 2025-06-02T17:27:52.12442Z
+    updatedAt: 2025-06-02T17:27:52.12442Z
+    version: 0
+spec:
+    display:
+        name: test

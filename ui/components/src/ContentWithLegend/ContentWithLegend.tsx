@@ -46,6 +46,8 @@ export function ContentWithLegend({
     legendSize: getLegendSize(legendSize),
   });
 
+  console.log('CONTENT WITH LEGEND');
+
   return (
     <Box
       style={{

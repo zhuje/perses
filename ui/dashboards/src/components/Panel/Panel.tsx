@@ -91,6 +91,8 @@ export const Panel = memo(function Panel(props: PanelProps) {
 
   const { queryResults } = useDataQueriesContext();
 
+  console.log({ queryResults });
+
   const handleMouseEnter: CardProps['onMouseEnter'] = (e) => {
     onMouseEnter?.(e);
   };
