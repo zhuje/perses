@@ -187,10 +187,6 @@ export function Table<TableData>({
     [handleRowSelectionEvent, table]
   );
 
-  console.log({ row: table.getRowModel().rows });
-  console.log({ columns: table.getAllFlatColumns() });
-  console.log({ header: table.getHeaderGroups() });
-
   return (
     <VirtualizedTable
       {...otherProps}

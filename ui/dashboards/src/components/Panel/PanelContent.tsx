@@ -32,6 +32,8 @@ export function PanelContent(props: PanelContentProps): ReactElement {
   const { panelPluginKind, definition, queryResults, spec, contentDimensions } = props;
   const { data: plugin, isLoading: isPanelLoading } = usePlugin('Panel', panelPluginKind, { throwOnError: true });
 
+  console.log('CILANTRO', { plugin: plugin?.PanelComponent.displayName });
+
   // Show fullsize skeleton if the panel plugin is loading.
   if (isPanelLoading) {
     return (
@@ -49,7 +51,8 @@ export function PanelContent(props: PanelContentProps): ReactElement {
   const queryResultsWithData = queryResults.flatMap((q) =>
     q.data ? [{ data: q.data, definition: q.definition }] : []
   );
-  console.log({ queryResultsWithData });
+  console.log('1.', { queryResultsWithData });
+
   if (queryResultsWithData.length > 0 || queryResults.length === 0) {
     return (
       <PanelPluginLoader

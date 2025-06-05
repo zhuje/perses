@@ -213,7 +213,6 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
       <>{children}</>
     );
 
-  console.log({ cupcake: queryResults });
   return (
     <>
       {/* small panel width: move all icons except move/grab to overflow menu */}
