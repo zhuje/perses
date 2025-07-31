@@ -115,7 +115,7 @@ func TestJSONMarshalConfig(t *testing.T) {
       "check_latest_update_interval": "30s"
     },
     "authentication": {
-      "access_token_ttl": "15m",
+      "access_token_ttl": "100m",
       "refresh_token_ttl": "1d",
       "disable_sign_up": false,
       "providers": {

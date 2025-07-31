@@ -1,0 +1,67 @@
+{
+  "mcpServers": {
+    "perses-mcp": {
+      "command": "cd /Users/jezhu/Git/mcp-server && go run main.go",
+      "args": [
+        "--perses-server-url",
+        "https://demo.perses.dev"
+      ],
+      "env": {
+        "PERSES_TOKEN": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqZW5ueS5hLnpodSIsImV4cCI6MTc1Mzc1MzAyMCwibmJmIjoxNzUzNzUyMTIwfQ.5l7w65fmRkij19xlX2LH3fKX2EGyjp_ifwRCxnvosgoDQgXD4ym77cDzq1shWcS3zERJmapsloA2UNBApvUhRA"
+      }
+    }
+  }
+}
+
+{
+  "mcpServers": {
+    "perses-mcp": {
+      "command": "<ABSOLUTE_PATH_TO_PERSES_MCP_BINARY>",
+      "args": [
+        "--perses-server-url",
+        "<PERSES_SERVER_URL>"
+      ],
+      "env": {
+        "PERSES_TOKEN": "<PERSES_TOKEN>"
+      }
+    }
+  }
+}
+
+{
+  "mcpServers": {
+    "perses-mcp": {
+      "command": "/Users/jezhu/Git/mcp-server/bin/mcp-server",
+      "env": {
+        "PERSES_TOKEN": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqZW5ueS5hLnpodSIsImV4cCI6MTc1Mzc1MzAyMCwibmJmIjoxNzUzNzUyMTIwfQ.5l7w65fmRkij19xlX2LH3fKX2EGyjp_ifwRCxnvosgoDQgXD4ym77cDzq1shWcS3zERJmapsloA2UNBApvUhRA"
+      }
+    }
+  }
+}
+
+{
+  "mcpServers": {
+    "perses-mcp": {
+      "command": "/Users/jezhu/Git/mcp-server/bin/mcp-server",
+      "args": [
+        "--perses-server-url",
+        "http://localhost:8080"
+      ],
+      "env": {
+        "PERSES_TOKEN": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc1Mzc1NTM4MSwibmJmIjoxNzUzNzU0NDgxfQ.pbUcEkcTuoHi3LUYTeZxi4gJWsbCxlZ1yapUJ9hvBW9dg32UfqKL3m1mGSRw20WiuIw9gVpBUfRdTju5IYHhRg"
+      }
+    }
+  }
+}
+
+{
+  "mcpServers": {
+    "perses-mcp": {
+      "command": "/Users/jezhu/Git/mcp-server/bin/mcp-server",
+      "args": ["--perses-server-url", "https://demo.perses.dev"],
+      "env": {
+        "PERSES_TOKEN": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc1MzgyMDY4NSwibmJmIjoxNzUzODE5Nzg1fQ.33VrrwguYLIW_29oHa4RFz-VcdEI2Rjqe8ydamHX6ElQ8JvwyCTrsRjRL465tplDNfHcMZ69KTd5MeKpobwtPg"
+      }
+    }
+  }
+}
